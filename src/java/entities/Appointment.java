@@ -13,8 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- *
- * @author 2dam
+ * Entity for the appointments, it has the attributes: psychologist, client, date, diagnose, numApppointment and price.
+ * Ilia Consuegra
  */
 @Entity
 public class Appointment implements Serializable {
@@ -22,7 +22,8 @@ public class Appointment implements Serializable {
     private static long serialVersionUID = 1L;
     @Id
     //@GeneratedValue(strategy = GenerationType.AUTO)
-    
+    private Psychologist psychologist;
+    private Client client;
     private LocalDateTime date;
     private String diagnose;
     private Integer numAppointment;
@@ -124,5 +125,33 @@ public class Appointment implements Serializable {
      */
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    /**
+     * @return the psychologist
+     */
+    public Psychologist getPsychologist() {
+        return psychologist;
+    }
+
+    /**
+     * @param psychologist the psychologist to set
+     */
+    public void setPsychologist(Psychologist psychologist) {
+        this.psychologist = psychologist;
+    }
+
+    /**
+     * @return the client
+     */
+    public Client getClient() {
+        return client;
+    }
+
+    /**
+     * @param client the client to set
+     */
+    public void setClient(Client client) {
+        this.client = client;
     }
 }

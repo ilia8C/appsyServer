@@ -27,6 +27,7 @@ public class Psychologist extends User implements Serializable {
 
     private String specialization;
     private String office;
+    //private ArrayList<Resource> resources;
 
     /*
     @Override
