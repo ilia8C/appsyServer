@@ -6,7 +6,6 @@
 package entities;
 
 import java.io.Serializable;
-
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
@@ -25,8 +24,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name="psychologist", schema="appsydb")
 public class Psychologist extends User implements Serializable {
-
-    @OneToMany(mappedBy = "psychologist")
 
     private static long serialVersionUID = 1L;
     
