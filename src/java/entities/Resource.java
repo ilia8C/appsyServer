@@ -7,10 +7,16 @@ package entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * This is the code entity for the Resource class.
@@ -18,16 +24,41 @@ import javax.persistence.Id;
  * @author Matteo Fernández
  */
 @Entity
+@Table(name="resource",schema="appsydb")
 public class Resource implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer idResource;
+    @ManyToOne
     private Psychologist psychologist;
+    @NotNull
     private String link;
+    @NotNull
     private LocalDate dateAdded;
+    @NotNull
     private String tittle;
+    @OneToMany(cascade = ALL, mappedBy = "resource")
+    private Set<ClientResource> clientResource;
+
+    /**
+     * Is used to ask for a list of ClientResources.
+     *
+     * @return a list of ClientResources.
+     */
+    public Set<ClientResource> getClientResource() {
+        return clientResource;
+    }
+
+    /**
+     * Is used to ask for a list of ClientResources.
+     *
+     * @param clientResource the object clientResource.
+     */
+    public void setClientResource(Set<ClientResource> clientResource) {
+        this.clientResource = clientResource;
+    }
 
     /**
      * Is used to ask for the Psychologist.
@@ -143,5 +174,6 @@ public class Resource implements Serializable {
     public String toString() {
         return "entities.Resource[ idResource=" + idResource + " ]";
     }
+    
 
 }
