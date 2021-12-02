@@ -34,6 +34,9 @@ public class Psychologist extends User implements Serializable {
     //@GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull
     private String specialization;
+    /**
+     * The attribute for the office of the psychologist
+     */
     @NotNull
     private String office;
     @OneToMany(cascade=ALL, mappedBy="resource")
