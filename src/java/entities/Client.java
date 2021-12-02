@@ -8,19 +8,19 @@ package entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
+ * This class is for the Client entity, it has the attributes: dateStart and the
+ * User attributes: idUser, password, enumPrivilege, enumStatus, fullName, email
+ * and login.
  *
- * @author Usuario
+ * @author Alain Lozano Isasi
  */
 @Entity
 public class Client extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private LocalDate dateStart;
 
     /**
@@ -36,8 +36,5 @@ public class Client extends User implements Serializable {
     public void setDateStart(LocalDate dateStart) {
         this.dateStart = dateStart;
     }
-    
-    
-    
-    
+
 }

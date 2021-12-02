@@ -12,7 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- *
+ * This class is for the User entity is has this attributes: idUser, password, enumPrivilege, enumStatus, fullName, email
+ * and login.
  * @author Alain Lozano Isasi
  */
 @Entity
