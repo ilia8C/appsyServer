@@ -6,30 +6,53 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
- * This class is for the User entity is has this attributes: idUser, password, enumPrivilege, enumStatus, fullName, email
- * and login.
+ * This class is for the User entity is has this attributes: idUser, password,
+ * enumPrivilege, enumStatus, fullName, email and login.
+ *
  * @author Alain Lozano Isasi
  */
 @Entity
+@Table(name = "user", schema = "appsydb")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer idUser;
+    @NotNull
     private String password;
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private EnumPrivilege enumPrivilege;
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private EnumStatus enumStatus;
+    @NotNull
     private String fullName;
+    @NotNull
     private String email;
+    @NotNull
+    @Column(name = "login", unique = true)
     private String login;
-    
+    @OneToMany
+    private Set<LastSignIn> lastSignins;
 
     public Integer getId() {
         return idUser;
@@ -38,7 +61,7 @@ public class User implements Serializable {
     public void setId(Integer id) {
         this.idUser = id;
     }
-    
+
     /**
      * @return the password
      */
@@ -123,21 +146,68 @@ public class User implements Serializable {
         this.login = login;
     }
 
+    /**
+     * @return the lastSignins
+     */
+    public Set<LastSignIn> getLastSignins() {
+        return lastSignins;
+    }
+
+    /**
+     * @param lastSignins the lastSignins to set
+     */
+    public void setLastSignins(Set<LastSignIn> lastSignins) {
+        this.lastSignins = lastSignins;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (login != null ? login.hashCode() : 0);
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode(this.idUser);
+        hash = 31 * hash + Objects.hashCode(this.password);
+        hash = 31 * hash + Objects.hashCode(this.enumPrivilege);
+        hash = 31 * hash + Objects.hashCode(this.enumStatus);
+        hash = 31 * hash + Objects.hashCode(this.fullName);
+        hash = 31 * hash + Objects.hashCode(this.email);
+        hash = 31 * hash + Objects.hashCode(this.login);
+        hash = 31 * hash + Objects.hashCode(this.lastSignins);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the idUser fields are not set
-        if (!(object instanceof User)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        User other = (User) object;
-        if ((this.login == null && other.login != null) || (this.login != null && !this.login.equals(other.login))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        if (!Objects.equals(this.fullName, other.fullName)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.login, other.login)) {
+            return false;
+        }
+        if (!Objects.equals(this.idUser, other.idUser)) {
+            return false;
+        }
+        if (this.enumPrivilege != other.enumPrivilege) {
+            return false;
+        }
+        if (this.enumStatus != other.enumStatus) {
+            return false;
+        }
+        if (!Objects.equals(this.lastSignins, other.lastSignins)) {
             return false;
         }
         return true;
@@ -145,8 +215,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "idUser=" + idUser + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + '}';
+        return "User{" + "idUser=" + idUser + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + ", lastSignins=" + lastSignins + '}';
     }
-    
-    
+
 }
