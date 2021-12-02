@@ -6,11 +6,13 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity for the psychologist, it extends from the entity User which gives the
@@ -20,45 +22,68 @@ import javax.persistence.Id;
  * @author Ilia Consuegra
  */
 @Entity
+@Table(name="psychologist", schema="appsydb")
 public class Psychologist extends User implements Serializable {
 
     private static long serialVersionUID = 1L;
     
     //@GeneratedValue(strategy = GenerationType.AUTO)
-
+    @NotNull
     private String specialization;
+    @NotNull
     private String office;
-    private ArrayList<Resource> resources;
-    private ArrayList<Appointment> appointments;
+    @OneToMany(cascade=ALL, mappedBy="resource")
+    private Set<Resource> resources;
+    @OneToMany(cascade=ALL, mappedBy="psychologist")
+    private Set<Appointment> appointments;
 
-    /*
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.specialization);
+        hash = 97 * hash + Objects.hashCode(this.office);
+        hash = 97 * hash + Objects.hashCode(this.resources);
+        hash = 97 * hash + Objects.hashCode(this.appointments);
         return hash;
     }
-     */
- /*
+
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Psychologist)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Psychologist other = (Psychologist) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Psychologist other = (Psychologist) obj;
+        if (!Objects.equals(this.specialization, other.specialization)) {
+            return false;
+        }
+        if (!Objects.equals(this.office, other.office)) {
+            return false;
+        }
+        if (!Objects.equals(this.resources, other.resources)) {
+            return false;
+        }
+        if (!Objects.equals(this.appointments, other.appointments)) {
             return false;
         }
         return true;
     }
-     */
- /*
+
     @Override
     public String toString() {
-        return "entities.Psychologist[ id=" + id + " ]";
+        return "Psychologist{" + "specialization=" + specialization + ", office=" + office + ", resources=" + resources + ", appointments=" + appointments + '}';
     }
-     */
+
+   
+
+   
+
+   
     /**
      * @return the serialVersionUID
      */
@@ -104,29 +129,30 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the resources
      */
-    public ArrayList<Resource> getResources() {
+    public Set<Resource> getResources() {
         return resources;
     }
 
     /**
      * @param resources the resources to set
      */
-    public void setResources(ArrayList<Resource> resources) {
+    public void setResources(Set<Resource> resources) {
         this.resources = resources;
     }
 
     /**
      * @return the appointments
      */
-    public ArrayList<Appointment> getAppointments() {
+    public Set<Appointment> getAppointments() {
         return appointments;
     }
 
     /**
      * @param appointments the appointments to set
      */
-    public void setAppointments(ArrayList<Appointment> appointments) {
+    public void setAppointments(Set<Appointment> appointments) {
         this.appointments = appointments;
     }
+
 
 }
