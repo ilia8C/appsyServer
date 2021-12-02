@@ -27,7 +27,6 @@ import javax.validation.constraints.NotNull;
 public class Psychologist extends User implements Serializable {
 
     @OneToMany(mappedBy = "psychologist")
-    private List<Resource> resources;
 
     private static long serialVersionUID = 1L;
     
