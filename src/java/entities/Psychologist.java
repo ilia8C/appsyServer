@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +28,8 @@ public class Psychologist extends User implements Serializable {
 
     private String specialization;
     private String office;
-    //private ArrayList<Resource> resources;
+    private ArrayList<Resource> resources;
+    private ArrayList<Appointment> appointments;
 
     /*
     @Override
@@ -97,6 +99,34 @@ public class Psychologist extends User implements Serializable {
      */
     public void setOffice(String office) {
         this.office = office;
+    }
+
+    /**
+     * @return the resources
+     */
+    public ArrayList<Resource> getResources() {
+        return resources;
+    }
+
+    /**
+     * @param resources the resources to set
+     */
+    public void setResources(ArrayList<Resource> resources) {
+        this.resources = resources;
+    }
+
+    /**
+     * @return the appointments
+     */
+    public ArrayList<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    /**
+     * @param appointments the appointments to set
+     */
+    public void setAppointments(ArrayList<Appointment> appointments) {
+        this.appointments = appointments;
     }
 
 }
