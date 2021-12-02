@@ -14,7 +14,7 @@ import javax.persistence.Id;
 
 /**
  * This is the code entity for the Resource class.
- * 
+ *
  * @author Matteo Fernández
  */
 @Entity
@@ -24,14 +24,32 @@ public class Resource implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer idResource;
-    //private Psychologist psychologist;
+    private Psychologist psychologist;
     private String link;
     private LocalDate dateAdded;
     private String tittle;
 
     /**
+     * Is used to ask for the Psychologist.
+     *
+     * @return the object Psychologist.
+     */
+    public Psychologist getPsychologist() {
+        return psychologist;
+    }
+
+    /**
+     * Is used to ask for the Psychologist.
+     *
+     * @param psychologist the object Psychologist.
+     */
+    public void setPsychologist(Psychologist psychologist) {
+        this.psychologist = psychologist;
+    }
+
+    /**
      * Is used to ask for the id of the Resource.
-     * 
+     *
      * @return the Resource id, that is the Primary key.
      */
     public Integer getIdResource() {
@@ -40,7 +58,7 @@ public class Resource implements Serializable {
 
     /**
      * Puts the id of the Resource.
-     * 
+     *
      * @param id is the idResource that is the primary key.
      */
     public void setIdResource(Integer id) {
@@ -49,7 +67,7 @@ public class Resource implements Serializable {
 
     /**
      * Is used to ask for the link of the Resource.
-     * 
+     *
      * @return the link of the Resource.
      */
     public String getLink() {
@@ -58,7 +76,7 @@ public class Resource implements Serializable {
 
     /**
      * Puts the Link of the Resource.
-     * 
+     *
      * @param link is a String with a link inside.
      */
     public void setLink(String link) {
@@ -67,7 +85,7 @@ public class Resource implements Serializable {
 
     /**
      * Is used to ask for the Date Added of the Resource.
-     * 
+     *
      * @return the date added.
      */
     public LocalDate getDateAdded() {
@@ -76,7 +94,7 @@ public class Resource implements Serializable {
 
     /**
      * Puts the dateAdded of the Resource.
-     * 
+     *
      * @param dateAdded the date of the Resource
      */
     public void setDateAdded(LocalDate dateAdded) {
@@ -85,7 +103,7 @@ public class Resource implements Serializable {
 
     /**
      * Is used to ask for the tittle of the Resource.
-     * 
+     *
      * @return the tittle of the Resource.
      */
     public String getTittle() {
@@ -94,7 +112,7 @@ public class Resource implements Serializable {
 
     /**
      * Puts the tittle of the Resource.
-     * 
+     *
      * @param tittle value for the Resource tittle.
      */
     public void setTittle(String tittle) {
