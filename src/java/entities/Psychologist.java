@@ -19,10 +19,10 @@ import javax.persistence.Id;
  * @author Ilia Consuegra
  */
 @Entity
-public class Psychologist implements Serializable {
+public class Psychologist extends User implements Serializable {
 
     private static long serialVersionUID = 1L;
-    @Id
+    
     //@GeneratedValue(strategy = GenerationType.AUTO)
 
     private String specialization;
