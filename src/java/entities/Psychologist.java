@@ -6,10 +6,12 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * Entity for the psychologist, it extends from the entity User which gives the
@@ -20,6 +22,9 @@ import javax.persistence.Id;
  */
 @Entity
 public class Psychologist extends User implements Serializable {
+
+    @OneToMany(mappedBy = "psychologist")
+    private List<Resource> resources;
 
     private static long serialVersionUID = 1L;
     
