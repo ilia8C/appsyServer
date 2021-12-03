@@ -7,15 +7,18 @@ package entities;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -23,17 +26,17 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "lastSignIn", schema = "appsydb")
+@XmlRootElement
 public class LastSignIn implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer signInId;
-    @NotNull
-    private Integer idUser; 
-    @NotNull
+    @ManyToOne
+    private User user; 
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime lastSignIn;
+    private Date lastSignIn;
 
     public Integer getId() {
         return signInId;
@@ -46,28 +49,28 @@ public class LastSignIn implements Serializable {
     /**
      * @return the idUser
      */
-    public Integer getIdUser() {
-        return idUser;
+    public User getUser() {
+        return user;
     }
 
     /**
      * @param idUser the idUser to set
      */
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     /**
      * @return the lastSignIn
      */
-    public LocalDateTime getLastSignIn() {
+    public Date getLastSignIn() {
         return lastSignIn;
     }
 
     /**
      * @param lastSignIn the lastSignIn to set
      */
-    public void setLastSignIn(LocalDateTime lastSignIn) {
+    public void setLastSignIn(Date lastSignIn) {
         this.lastSignIn = lastSignIn;
     }
 
@@ -75,7 +78,7 @@ public class LastSignIn implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 67 * hash + Objects.hashCode(this.signInId);
-        hash = 67 * hash + Objects.hashCode(this.idUser);
+        hash = 67 * hash + Objects.hashCode(this.user);
         hash = 67 * hash + Objects.hashCode(this.lastSignIn);
         return hash;
     }
@@ -95,7 +98,7 @@ public class LastSignIn implements Serializable {
         if (!Objects.equals(this.signInId, other.signInId)) {
             return false;
         }
-        if (!Objects.equals(this.idUser, other.idUser)) {
+        if (!Objects.equals(this.user, other.user)) {
             return false;
         }
         if (!Objects.equals(this.lastSignIn, other.lastSignIn)) {
@@ -106,7 +109,7 @@ public class LastSignIn implements Serializable {
 
     @Override
     public String toString() {
-        return "LastSignIn{" + "signInId=" + signInId + ", idUser=" + idUser + ", lastSignIn=" + lastSignIn + '}';
+        return "LastSignIn{" + "signInId=" + signInId + ", idUser=" + user + ", lastSignIn=" + lastSignIn + '}';
     }
     
     

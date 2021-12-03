@@ -10,9 +10,12 @@ import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity for the psychologist, it extends from the entity User which gives the
@@ -28,14 +31,14 @@ public class Psychologist extends User implements Serializable {
     private static long serialVersionUID = 1L;
     
     //@GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
+   
     private String specialization;
     /**
      * The attribute for the office of the psychologist
      */
-    @NotNull
+    
     private String office;
-    @OneToMany(cascade=ALL, mappedBy="resource")
+    @OneToMany(cascade=ALL, mappedBy="psychologist")
     private Set<Resource> resources;
     @OneToMany(cascade=ALL, mappedBy="psychologist")
     private Set<Appointment> appointments;
@@ -132,6 +135,7 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the resources
      */
+    
     public Set<Resource> getResources() {
         return resources;
     }
@@ -146,6 +150,7 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the appointments
      */
+    
     public Set<Appointment> getAppointments() {
         return appointments;
     }
