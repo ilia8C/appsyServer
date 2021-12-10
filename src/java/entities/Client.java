@@ -37,10 +37,10 @@ public class Client extends User implements Serializable{
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateStart;
     
-    @OneToMany(cascade=ALL,mappedBy = "client")
+    @OneToMany(mappedBy = "client")
     private Set<Appointment> appointments;
     
-     @OneToMany(cascade=ALL,mappedBy = "client")
+     @OneToMany(mappedBy = "client")
     private Set<ClientResource> clientResources;
      
        @Override

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -32,11 +33,13 @@ public class Appointment implements Serializable {
    
     @EmbeddedId
     private AppointmentId appointmentId;
-    @MapsId("psychologistId")
+    //@MapsId("psychologistId")
     @ManyToOne
+    @JoinColumn(name="psychologistId",updatable=false,insertable=false)
     private Psychologist psychologist;
-    @MapsId("clientId")
+    //@MapsId("clientId")
     @ManyToOne
+    @JoinColumn(name="clientId",updatable=false,insertable=false)
     private Client client;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;

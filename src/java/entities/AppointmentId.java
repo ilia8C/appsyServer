@@ -17,8 +17,6 @@ import javax.persistence.Table;
 @Embeddable
 public class AppointmentId implements Serializable{
 
-  
-
     private Integer psychologistId;
     private Integer clientId;
     

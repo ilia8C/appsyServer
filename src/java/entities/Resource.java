@@ -37,14 +37,14 @@ public class Resource implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idResource;
+    private Integer id;
     @ManyToOne
     private Psychologist psychologist;
     private String link;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
     private String tittle;
-    @OneToMany(cascade = ALL, mappedBy = "resource", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "resource")
     private Set<ClientResource> clientResource;
 
     /**
@@ -89,17 +89,17 @@ public class Resource implements Serializable {
      *
      * @return the Resource id, that is the Primary key.
      */
-    public Integer getIdResource() {
-        return idResource;
+    public Integer getId() {
+        return id;
     }
 
     /**
      * Puts the id of the Resource.
      *
-     * @param id is the idResource that is the primary key.
+     * @param id is the id that is the primary key.
      */
-    public void setIdResource(Integer id) {
-        this.idResource = id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     /**
@@ -159,7 +159,7 @@ public class Resource implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idResource != null ? idResource.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -170,7 +170,7 @@ public class Resource implements Serializable {
             return false;
         }
         Resource other = (Resource) object;
-        if ((this.idResource == null && other.idResource != null) || (this.idResource != null && !this.idResource.equals(other.idResource))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -178,7 +178,7 @@ public class Resource implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Resource[ idResource=" + idResource + " ]";
+        return "entities.Resource[ id=" + id + " ]";
     }
     
 

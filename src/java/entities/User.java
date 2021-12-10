@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * This class is for the User entity is has this attributes: idUser, password,
+ * This class is for the User entity is has this attributes: id, password,
  * enumPrivilege, enumStatus, fullName, email and login.
  *
  * @author Alain Lozano Isasi
@@ -40,7 +40,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idUser;
+    private Integer id;
     private String password;
     @Enumerated(EnumType.STRING)
     private EnumPrivilege enumPrivilege;
@@ -54,11 +54,11 @@ public class User implements Serializable {
     private Set<LastSignIn> lastSignIns;
 
     public Integer getId() {
-        return idUser;
+        return id;
     }
 
     public void setId(Integer id) {
-        this.idUser = id;
+        this.id = id;
     }
 
     /**
@@ -164,7 +164,7 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.idUser);
+        hash = 31 * hash + Objects.hashCode(this.id);
         hash = 31 * hash + Objects.hashCode(this.password);
         hash = 31 * hash + Objects.hashCode(this.enumPrivilege);
         hash = 31 * hash + Objects.hashCode(this.enumStatus);
@@ -199,7 +199,7 @@ public class User implements Serializable {
         if (!Objects.equals(this.login, other.login)) {
             return false;
         }
-        if (!Objects.equals(this.idUser, other.idUser)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         if (this.enumPrivilege != other.enumPrivilege) {
@@ -216,7 +216,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "idUser=" + idUser + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + '}';
+        return "User{" + "id=" + id + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + '}';
     }
 
 }

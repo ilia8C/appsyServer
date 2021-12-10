@@ -37,9 +37,9 @@ public class Psychologist extends User implements Serializable{
      */
     
     private String office;
-    @OneToMany(cascade=ALL, mappedBy="psychologist")
+    @OneToMany(mappedBy="psychologist")
     private Set<Resource> resources;
-    @OneToMany(cascade=ALL, mappedBy="psychologist")
+    @OneToMany(mappedBy="psychologist")
     private Set<Appointment> appointments;
 
     @Override

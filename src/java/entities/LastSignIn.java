@@ -32,18 +32,18 @@ public class LastSignIn implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer signInId;
+    private Integer id;
     @ManyToOne
     private User user; 
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSignIn;
 
     public Integer getId() {
-        return signInId;
+        return id;
     }
 
     public void setId(Integer id) {
-        this.signInId = id;
+        this.id = id;
     }
 
     /**
@@ -77,7 +77,7 @@ public class LastSignIn implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.signInId);
+        hash = 67 * hash + Objects.hashCode(this.id);
         hash = 67 * hash + Objects.hashCode(this.user);
         hash = 67 * hash + Objects.hashCode(this.lastSignIn);
         return hash;
@@ -95,7 +95,7 @@ public class LastSignIn implements Serializable {
             return false;
         }
         final LastSignIn other = (LastSignIn) obj;
-        if (!Objects.equals(this.signInId, other.signInId)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         if (!Objects.equals(this.user, other.user)) {
@@ -109,7 +109,7 @@ public class LastSignIn implements Serializable {
 
     @Override
     public String toString() {
-        return "LastSignIn{" + "signInId=" + signInId + ", idUser=" + user + ", lastSignIn=" + lastSignIn + '}';
+        return "LastSignIn{" + "id=" + id + ", idUser=" + user + ", lastSignIn=" + lastSignIn + '}';
     }
     
     
