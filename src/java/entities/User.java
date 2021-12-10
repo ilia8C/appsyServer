@@ -50,7 +50,7 @@ public class User implements Serializable {
     private String email;
     @Column(name = "login", unique = true)
     private String login;
-    @OneToMany(mappedBy="user", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="user")
     private Set<LastSignIn> lastSignIns;
 
     public Integer getId() {
@@ -148,6 +148,7 @@ public class User implements Serializable {
     /**
      * @return the lastSignins
      */
+    
     @XmlTransient
     public Set<LastSignIn> getLastSignins() {
         return lastSignIns;
@@ -215,7 +216,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "idUser=" + idUser + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + ", lastSignins=" + lastSignIns + '}';
+        return "User{" + "idUser=" + idUser + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + '}';
     }
 
 }

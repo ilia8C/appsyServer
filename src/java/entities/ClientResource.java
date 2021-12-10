@@ -27,6 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ClientResource implements Serializable {
 
+    @EmbeddedId
+    private IdClientResource idClientResource;
     @MapsId("idResource")
     @ManyToOne
     private Resource resource;
@@ -36,8 +38,7 @@ public class ClientResource implements Serializable {
     private static final long serialVersionUID = 1L;
     
     
-    @EmbeddedId
-    private IdClientResource idClientResource;
+    
     private String typeDiagnose;
 
     public IdClientResource getIdClientResource() {

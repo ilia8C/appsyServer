@@ -14,7 +14,7 @@ import javax.persistence.Embeddable;
  * @author Matteo Fernández
  */
 @Embeddable
-class IdClientResource implements Serializable {
+public class IdClientResource implements Serializable {
 
     private Integer idClient;
     private Integer idResource;

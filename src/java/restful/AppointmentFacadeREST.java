@@ -34,7 +34,6 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
     private EntityManager em;
 
     private AppointmentId getPrimaryKey(PathSegment pathSegment) {
-        
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
          * URI path part is supposed to be in form of 'somePath;psychologistId=psychologistIdValue;clientId=clientIdValue'.
@@ -42,9 +41,7 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
          * it is ignored in the following code.
          * Matrix parameters are used as field names to build a primary key instance.
          */
-        
         entities.AppointmentId key = new entities.AppointmentId();
-        /*
         javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
         java.util.List<String> psychologistId = map.get("psychologistId");
         if (psychologistId != null && !psychologistId.isEmpty()) {
@@ -53,9 +50,8 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
         java.util.List<String> clientId = map.get("clientId");
         if (clientId != null && !clientId.isEmpty()) {
             key.setClientId(new java.lang.Integer(clientId.get(0)));
-        }*/
+        }
         return key;
-        
     }
 
     public AppointmentFacadeREST() {

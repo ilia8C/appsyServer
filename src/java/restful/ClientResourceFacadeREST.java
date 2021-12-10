@@ -6,7 +6,7 @@
 package restful;
 
 import entities.ClientResource;
-import entities.Resource;
+import entities.IdClientResource;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.PathSegment;
 
 /**
  *
@@ -31,6 +32,27 @@ public class ClientResourceFacadeREST extends AbstractFacade<ClientResource> {
 
     @PersistenceContext(unitName = "AppsyServerPU")
     private EntityManager em;
+
+    private IdClientResource getPrimaryKey(PathSegment pathSegment) {
+        /*
+         * pathSemgent represents a URI path segment and any associated matrix parameters.
+         * URI path part is supposed to be in form of 'somePath;idClient=idClientValue;idResource=idResourceValue'.
+         * Here 'somePath' is a result of getPath() method invocation and
+         * it is ignored in the following code.
+         * Matrix parameters are used as field names to build a primary key instance.
+         */
+        entities.IdClientResource key = new entities.IdClientResource();
+        javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
+        java.util.List<String> idClient = map.get("idClient");
+        if (idClient != null && !idClient.isEmpty()) {
+            key.setIdClient(new java.lang.Integer(idClient.get(0)));
+        }
+        java.util.List<String> idResource = map.get("idResource");
+        if (idResource != null && !idResource.isEmpty()) {
+            key.setIdResource(new java.lang.Integer(idResource.get(0)));
+        }
+        return key;
+    }
 
     public ClientResourceFacadeREST() {
         super(ClientResource.class);
@@ -46,21 +68,23 @@ public class ClientResourceFacadeREST extends AbstractFacade<ClientResource> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Resource id, ClientResource entity) {
+    public void edit(@PathParam("id") PathSegment id, ClientResource entity) {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Resource id) {
-        super.remove(super.find(id));
+    public void remove(@PathParam("id") PathSegment id) {
+        entities.IdClientResource key = getPrimaryKey(id);
+        super.remove(super.find(key));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ClientResource find(@PathParam("id") Resource id) {
-        return super.find(id);
+    public ClientResource find(@PathParam("id") PathSegment id) {
+        entities.IdClientResource key = getPrimaryKey(id);
+        return super.find(key);
     }
 
     @GET
