@@ -7,16 +7,22 @@ package entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This is the code entity for the Resource class.
@@ -25,21 +31,20 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="resource",schema="appsydb")
+@XmlRootElement
 public class Resource implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idResource;
+    private Integer id;
     @ManyToOne
     private Psychologist psychologist;
-    @NotNull
     private String link;
-    @NotNull
-    private LocalDate dateAdded;
-    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateAdded;
     private String tittle;
-    @OneToMany(cascade = ALL, mappedBy = "resource")
+    @OneToMany(mappedBy = "resource")
     private Set<ClientResource> clientResource;
 
     /**
@@ -47,6 +52,7 @@ public class Resource implements Serializable {
      *
      * @return a list of ClientResources.
      */
+    @XmlTransient
     public Set<ClientResource> getClientResource() {
         return clientResource;
     }
@@ -83,17 +89,17 @@ public class Resource implements Serializable {
      *
      * @return the Resource id, that is the Primary key.
      */
-    public Integer getIdResource() {
-        return idResource;
+    public Integer getId() {
+        return id;
     }
 
     /**
      * Puts the id of the Resource.
      *
-     * @param id is the idResource that is the primary key.
+     * @param id is the id that is the primary key.
      */
-    public void setIdResource(Integer id) {
-        this.idResource = id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     /**
@@ -119,7 +125,7 @@ public class Resource implements Serializable {
      *
      * @return the date added.
      */
-    public LocalDate getDateAdded() {
+    public Date getDateAdded() {
         return dateAdded;
     }
 
@@ -128,7 +134,7 @@ public class Resource implements Serializable {
      *
      * @param dateAdded the date of the Resource
      */
-    public void setDateAdded(LocalDate dateAdded) {
+    public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
     }
 
@@ -153,7 +159,7 @@ public class Resource implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idResource != null ? idResource.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -164,7 +170,7 @@ public class Resource implements Serializable {
             return false;
         }
         Resource other = (Resource) object;
-        if ((this.idResource == null && other.idResource != null) || (this.idResource != null && !this.idResource.equals(other.idResource))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -172,7 +178,7 @@ public class Resource implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Resource[ idResource=" + idResource + " ]";
+        return "entities.Resource[ id=" + id + " ]";
     }
     
 

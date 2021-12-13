@@ -6,16 +6,18 @@
 package entities;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entity for the appointments, it has the attributes: psychologist, client, date, diagnose, numApppointment and price.
@@ -23,29 +25,26 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="appointment", schema="appsydb")
+@XmlRootElement
 public class Appointment implements Serializable {
 
     private static long serialVersionUID = 1L;
     
-    //@GeneratedValue(strategy = GenerationType.AUTO)
+   
     @EmbeddedId
     private AppointmentId appointmentId;
-    @MapsId("psychologistId")
+    //@MapsId("psychologistId")
     @ManyToOne
-    @NotNull
+    @JoinColumn(name="psychologistId",updatable=false,insertable=false)
     private Psychologist psychologist;
-    @MapsId("clientId")
+    //@MapsId("clientId")
     @ManyToOne
-    @NotNull
+    @JoinColumn(name="clientId",updatable=false,insertable=false)
     private Client client;
     @Temporal(TemporalType.TIMESTAMP)
-    @NotNull
-    private LocalDateTime date;
-    @NotNull
+    private Date date;
     private String diagnose;
-    @NotNull
     private Integer numAppointment;
-    @NotNull
     private Float price;
 
     @Override
@@ -163,14 +162,14 @@ public class Appointment implements Serializable {
     /**
      * @return the date
      */
-    public LocalDateTime getDate() {
+    public Date getDate() {
         return date;
     }
 
     /**
      * @param date the date to set
      */
-    public void setDate(LocalDateTime date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

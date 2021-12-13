@@ -12,10 +12,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -23,22 +25,28 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "clientresouce", schema = "appsydb")
+@XmlRootElement
 public class ClientResource implements Serializable {
 
-    @MapsId("idResource")
-    @ManyToOne
-    private Resource resource;
-
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    
     @EmbeddedId
     private IdClientResource idClientResource;
-    @NotNull
+    //@MapsId("idResource")
+    @ManyToOne
+    @JoinColumn(name="idResource",updatable=false,insertable=false)
+    private Resource resource;
+    //@MapsId("idClient")
+    @ManyToOne
+    @JoinColumn(name="idClient",updatable=false,insertable=false)
+    private Client client;
     private String typeDiagnose;
 
-    public IdClientResource getIdClientResource() {
-        return idClientResource;
+    public Client getClient(){
+        return this.client;
+    }
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Resource getResource() {
@@ -49,9 +57,6 @@ public class ClientResource implements Serializable {
         this.resource = resource;
     }
 
-    public void setIdClientResource(IdClientResource idClientResource) {
-        this.idClientResource = idClientResource;
-    }
 
     public String getTypeDiagnose() {
         return typeDiagnose;

@@ -8,10 +8,12 @@ package entities;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,9 +22,11 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * This class is for the User entity is has this attributes: idUser, password,
+ * This class is for the User entity is has this attributes: id, password,
  * enumPrivilege, enumStatus, fullName, email and login.
  *
  * @author Alain Lozano Isasi
@@ -30,36 +34,31 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "user", schema = "appsydb")
 @Inheritance(strategy = InheritanceType.JOINED)
+@XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idUser;
-    @NotNull
+    private Integer id;
     private String password;
-    @NotNull
     @Enumerated(EnumType.STRING)
     private EnumPrivilege enumPrivilege;
-    @NotNull
     @Enumerated(EnumType.STRING)
     private EnumStatus enumStatus;
-    @NotNull
     private String fullName;
-    @NotNull
     private String email;
-    @NotNull
     @Column(name = "login", unique = true)
     private String login;
-    @OneToMany
-    private Set<LastSignIn> lastSignins;
+    @OneToMany(mappedBy="user")
+    private Set<LastSignIn> lastSignIns;
 
     public Integer getId() {
-        return idUser;
+        return id;
     }
 
     public void setId(Integer id) {
-        this.idUser = id;
+        this.id = id;
     }
 
     /**
@@ -149,28 +148,30 @@ public class User implements Serializable {
     /**
      * @return the lastSignins
      */
+    
+    @XmlTransient
     public Set<LastSignIn> getLastSignins() {
-        return lastSignins;
+        return lastSignIns;
     }
 
     /**
      * @param lastSignins the lastSignins to set
      */
-    public void setLastSignins(Set<LastSignIn> lastSignins) {
-        this.lastSignins = lastSignins;
+    public void setLastSignins(Set<LastSignIn> lastSignIns) {
+        this.lastSignIns = lastSignIns;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.idUser);
+        hash = 31 * hash + Objects.hashCode(this.id);
         hash = 31 * hash + Objects.hashCode(this.password);
         hash = 31 * hash + Objects.hashCode(this.enumPrivilege);
         hash = 31 * hash + Objects.hashCode(this.enumStatus);
         hash = 31 * hash + Objects.hashCode(this.fullName);
         hash = 31 * hash + Objects.hashCode(this.email);
         hash = 31 * hash + Objects.hashCode(this.login);
-        hash = 31 * hash + Objects.hashCode(this.lastSignins);
+        hash = 31 * hash + Objects.hashCode(this.lastSignIns);
         return hash;
     }
 
@@ -198,7 +199,7 @@ public class User implements Serializable {
         if (!Objects.equals(this.login, other.login)) {
             return false;
         }
-        if (!Objects.equals(this.idUser, other.idUser)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         if (this.enumPrivilege != other.enumPrivilege) {
@@ -207,7 +208,7 @@ public class User implements Serializable {
         if (this.enumStatus != other.enumStatus) {
             return false;
         }
-        if (!Objects.equals(this.lastSignins, other.lastSignins)) {
+        if (!Objects.equals(this.lastSignIns, other.lastSignIns)) {
             return false;
         }
         return true;
@@ -215,7 +216,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "idUser=" + idUser + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + ", lastSignins=" + lastSignins + '}';
+        return "User{" + "id=" + id + ", password=" + password + ", enumPrivilege=" + enumPrivilege + ", enumStatus=" + enumStatus + ", fullName=" + fullName + ", email=" + email + ", login=" + login + '}';
     }
 
 }

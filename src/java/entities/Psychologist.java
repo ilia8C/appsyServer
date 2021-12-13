@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity for the psychologist, it extends from the entity User which gives the
@@ -23,21 +25,21 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="psychologist", schema="appsydb")
-public class Psychologist extends User implements Serializable {
+@XmlRootElement
+public class Psychologist extends User implements Serializable{
 
-    private static long serialVersionUID = 1L;
     
     //@GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
+    private static final long serialVersionUID = 1L;
     private String specialization;
     /**
      * The attribute for the office of the psychologist
      */
-    @NotNull
+    
     private String office;
-    @OneToMany(cascade=ALL, mappedBy="resource")
+    @OneToMany(mappedBy="psychologist")
     private Set<Resource> resources;
-    @OneToMany(cascade=ALL, mappedBy="psychologist")
+    @OneToMany(mappedBy="psychologist")
     private Set<Appointment> appointments;
 
     @Override
@@ -84,23 +86,6 @@ public class Psychologist extends User implements Serializable {
 
    
 
-   
-
-   
-    /**
-     * @return the serialVersionUID
-     */
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    /**
-     * @param aSerialVersionUID the serialVersionUID to set
-     */
-    public static void setSerialVersionUID(long aSerialVersionUID) {
-        serialVersionUID = aSerialVersionUID;
-    }
-
     /**
      * @return the specialization
      */
@@ -132,6 +117,8 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the resources
      */
+    
+    @XmlTransient
     public Set<Resource> getResources() {
         return resources;
     }
@@ -146,6 +133,8 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the appointments
      */
+    
+    @XmlTransient
     public Set<Appointment> getAppointments() {
         return appointments;
     }

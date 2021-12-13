@@ -7,14 +7,19 @@ package entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This class is for the Client entity, it has the attributes: dateStart and the
@@ -25,38 +30,73 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "client", schema = "appsydb") 
-public class Client extends User implements Serializable {
+@XmlRootElement
+public class Client extends User implements Serializable{
 
     private static final long serialVersionUID = 1L;
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDate dateStart;
+    private Date dateStart;
+    
+    @OneToMany(mappedBy = "client")
+    private Set<Appointment> appointments;
+    
+     @OneToMany(mappedBy = "client")
+    private Set<ClientResource> clientResources;
+     
+       @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode(this.dateStart);
+        hash = 67 * hash + Objects.hashCode(this.appointments);
+        hash = 67 * hash + Objects.hashCode(this.clientResources);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Client other = (Client) obj;
+        if (!Objects.equals(this.dateStart, other.dateStart)) {
+            return false;
+        }
+        if (!Objects.equals(this.appointments, other.appointments)) {
+            return false;
+        }
+        if (!Objects.equals(this.clientResources, other.clientResources)) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * @return the dateStart
      */
-    public LocalDate getDateStart() {
+    public Date getDateStart() {
         return dateStart;
     }
 
     /**
      * @param dateStart the dateStart to set
      */
-    public void setDateStart(LocalDate dateStart) {
+    public void setDateStart(Date dateStart) {
         this.dateStart = dateStart;
     }
 
-    
-    @OneToMany(cascade=ALL,mappedBy = "Client")
-    private Set<Appointment> appointments;
-    
-     @OneToMany(cascade=ALL,mappedBy = "Client")
-    private Set<ClientResource> clientResources;
     
      
     /**
      * @return the appointments
      */
+    
+    @XmlTransient
     public Set<Appointment> getAppointments() {
         return appointments;
     }
@@ -71,6 +111,8 @@ public class Client extends User implements Serializable {
     /**
      * @return the clientResources
      */
+    
+    @XmlTransient
     public Set<ClientResource> getClientResources() {
         return clientResources;
     }
