@@ -7,6 +7,7 @@ package restful;
 
 import entities.Psychologist;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,6 +29,9 @@ import javax.ws.rs.core.MediaType;
 @Path("entities.psychologist")
 public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
 
+    
+    //private final Logger LOGGER = Logger.getLogger(AppsyServer.restful.PsychologistFacadeREST.class);
+    
     @PersistenceContext(unitName = "AppsyServerPU")
     private EntityManager em;
 
@@ -37,14 +41,14 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
 
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void create(Psychologist entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, Psychologist entity) {
         super.edit(entity);
     }
@@ -57,21 +61,21 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public Psychologist find(@PathParam("id") Integer id) {
         return super.find(id);
     }
 
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<Psychologist> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<Psychologist> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
