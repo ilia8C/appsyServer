@@ -29,7 +29,7 @@ import javax.ws.rs.core.PathSegment;
 @Stateless
 @Path("entities.appointment")
 public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
-
+    
     @PersistenceContext(unitName = "AppsyServerPU")
     private EntityManager em;
 
