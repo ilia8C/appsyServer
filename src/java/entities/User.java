@@ -17,10 +17,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.validator.constraints.Email;
 
 /**
  * This class is for the User entity is has this attributes: id, password,
@@ -28,7 +31,11 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Alain Lozano Isasi
  */
-
+@NamedQueries({
+    @NamedQuery(
+            name="findUserByLoginAndPassword", query="SELECT u FROM User u WHERE u.login=:login and u.password=:password"
+    ),
+})
 @Entity
 @Table(name = "user", schema = "appsydb")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -45,8 +52,10 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private EnumStatus enumStatus;
     private String fullName;
+    @Column(unique = true)
+    @Email
     private String email;
-    @Column(name = "login", unique = true)
+    @Column(unique = true)
     private String login;
     @OneToMany(mappedBy="user")
     private Set<LastSignIn> lastSignIns;
@@ -62,6 +71,7 @@ public class User implements Serializable {
     /**
      * @return the password
      */
+    @XmlTransient
     public String getPassword() {
         return password;
     }

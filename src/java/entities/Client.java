@@ -36,7 +36,7 @@ public class Client extends User implements Serializable{
     @OneToMany(mappedBy = "client")
     private Set<Appointment> appointments;
     
-     @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client")
     private Set<ClientResource> clientResources;
      
        @Override

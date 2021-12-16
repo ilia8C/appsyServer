@@ -7,12 +7,16 @@ package restful;
 
 import entities.User;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -87,5 +91,22 @@ public class UserFacadeREST extends AbstractFacade<User> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+    @GET
+    @Path("login/{login}/password/{password}")
+    @Produces({MediaType.APPLICATION_XML})   
+    public User findUserByLoginAndPassword(@PathParam("login") String login,@PathParam("password") String password) throws Exception {
+        User user = null;
+        try{
+            user= (User) em.createNamedQuery("findUserByLoginAndPassword")
+                    .setParameter("login", login)
+                    .setParameter("password", password)
+                    .getSingleResult();
+        }catch(NoResultException e){
+            throw new NotAuthorizedException(e);
+        }catch(Exception e){
+           Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        }
+        return user;
+    }
+
 }
