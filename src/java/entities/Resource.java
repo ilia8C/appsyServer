@@ -52,7 +52,7 @@ public class Resource implements Serializable {
      *
      * @return a list of ClientResources.
      */
-    @XmlTransient
+    
     public Set<ClientResource> getClientResource() {
         return clientResource;
     }

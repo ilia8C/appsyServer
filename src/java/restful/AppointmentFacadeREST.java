@@ -7,7 +7,11 @@ package restful;
 
 import entities.Appointment;
 import entities.AppointmentId;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -108,6 +112,22 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("psychologistId/{psychologistId}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Appointment> findAppointmentsByPsychologist (@PathParam("psychologistId") Integer psychologistId){
+        Set<Appointment> appointments = null;
+        try{
+            appointments = new HashSet<>(em.createNamedQuery("findAppointmentsByPsychologist")
+                .setParameter("psychologistId", psychologistId)
+                .getResultList());
+        
+        }catch(Exception e){
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        }
+        return appointments;
+        
+    }
     @Override
     protected EntityManager getEntityManager() {
         return em;

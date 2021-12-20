@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,6 +25,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Entity for the appointments, it has the attributes: psychologist, client, date, diagnose, numApppointment and price.
  * Ilia Consuegra
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "findAppointmentsByPsychologist", 
+           query="SELECT a FROM Appointment a, Psychologist p WHERE p.id=:psychologistId and a.psychologist.id=p.id"
+                 //  SELECT s FROM Subject s, CourseSubject cs WHERE cs.course.idCourse=:idCourse and cs.subject.idSubject=s.idSubject
+    )
+})
 @Entity
 @Table(name="appointment", schema="appsydb")
 @XmlRootElement

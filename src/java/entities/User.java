@@ -149,7 +149,7 @@ public class User implements Serializable {
      * @return the lastSignins
      */
     
-    @XmlTransient
+    
     public Set<LastSignIn> getLastSignins() {
         return lastSignIns;
     }

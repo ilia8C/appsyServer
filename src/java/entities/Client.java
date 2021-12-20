@@ -96,7 +96,7 @@ public class Client extends User implements Serializable{
      * @return the appointments
      */
     
-    @XmlTransient
+    
     public Set<Appointment> getAppointments() {
         return appointments;
     }
@@ -112,7 +112,7 @@ public class Client extends User implements Serializable{
      * @return the clientResources
      */
     
-    @XmlTransient
+    
     public Set<ClientResource> getClientResources() {
         return clientResources;
     }

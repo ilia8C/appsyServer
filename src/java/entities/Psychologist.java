@@ -118,7 +118,7 @@ public class Psychologist extends User implements Serializable{
      * @return the resources
      */
     
-    @XmlTransient
+    
     public Set<Resource> getResources() {
         return resources;
     }
@@ -134,7 +134,7 @@ public class Psychologist extends User implements Serializable{
      * @return the appointments
      */
     
-    @XmlTransient
+    
     public Set<Appointment> getAppointments() {
         return appointments;
     }
