@@ -13,26 +13,23 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Entity for the appointments, it has the attributes: psychologist, client, date, diagnose, numApppointment and price.
- * Ilia Consuegra
+ * Entity for the appointments, it has the attributes: psychologist, client,
+ * date, diagnose, numApppointment and price. Ilia Consuegra
  */
 @Entity
-@Table(name="appointment", schema="appsydb")
+@Table(name = "appointment", schema = "appsydb")
 @XmlRootElement
 public class Appointment implements Serializable {
 
     private static long serialVersionUID = 1L;
-    
-   
+
     @EmbeddedId
     private AppointmentId appointmentId;
     //@MapsId("psychologistId")
@@ -94,11 +91,6 @@ public class Appointment implements Serializable {
         return "Appointment{" + "appointmentId=" + appointmentId + ", psychologist=" + psychologist + ", client=" + client + ", date=" + date + ", diagnose=" + diagnose + ", numAppointment=" + numAppointment + ", price=" + price + '}';
     }
 
-    
-
-   
-    
-
     /**
      * @return the serialVersionUID
      */
@@ -127,7 +119,6 @@ public class Appointment implements Serializable {
         this.appointmentId = appointmentId;
     }
 
-    
     /**
      * @return the psychologist
      */
@@ -157,7 +148,7 @@ public class Appointment implements Serializable {
     public void setClient(Client client) {
         this.client = client;
     }
-    
+
     /**
      * @return the date
      */

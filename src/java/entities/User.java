@@ -66,6 +66,7 @@ public class User implements Serializable {
     @Column(name = "login", unique = true)
     private String login;
     @OneToMany(mappedBy="user",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
+
     private Set<LastSignIn> lastSignIns;
 
     public Integer getId() {
@@ -164,6 +165,7 @@ public class User implements Serializable {
     /**
      * @return the lastSignins
      */
+
     public Set<LastSignIn> getLastSignins() {
         return lastSignIns;
     }
@@ -175,7 +177,7 @@ public class User implements Serializable {
         this.lastSignIns = lastSignIns;
     }
 
-    @Override
+   @Override
     public int hashCode() {
         int hash = 7;
         hash = 79 * hash + Objects.hashCode(this.id);

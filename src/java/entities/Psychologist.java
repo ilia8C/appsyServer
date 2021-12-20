@@ -8,14 +8,11 @@ package entities;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity for the psychologist, it extends from the entity User which gives the
@@ -25,25 +22,22 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Ilia Consuegra
  */
 @Entity
-@Table(name="psychologist", schema="appsydb")
+@Table(name = "psychologist", schema = "appsydb")
 @XmlRootElement
-public class Psychologist extends User implements Serializable{
+public class Psychologist extends User implements Serializable {
 
-    
     //@GeneratedValue(strategy = GenerationType.AUTO)
     private static final long serialVersionUID = 1L;
     private String specialization;
     /**
      * The attribute for the office of the psychologist
      */
-    
+
     private String office;
     @OneToMany(mappedBy="psychologist",fetch=FetchType.EAGER)
     private Set<Resource> resources;
     @OneToMany(mappedBy="psychologist",fetch=FetchType.EAGER)
     private Set<Appointment> appointments;
-
-
     /**
      * @return the specialization
      */
@@ -99,6 +93,5 @@ public class Psychologist extends User implements Serializable{
     public void setAppointments(Set<Appointment> appointments) {
         this.appointments = appointments;
     }
-
 
 }
