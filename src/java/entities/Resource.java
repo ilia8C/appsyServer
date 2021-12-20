@@ -44,7 +44,7 @@ public class Resource implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
     private String tittle;
-    @OneToMany(mappedBy = "resource")
+    @OneToMany(mappedBy = "resource", fetch = FetchType.EAGER)
     private Set<ClientResource> clientResource;
 
     /**
@@ -52,7 +52,7 @@ public class Resource implements Serializable {
      *
      * @return a list of ClientResources.
      */
-    
+    @XmlTransient
     public Set<ClientResource> getClientResource() {
         return clientResource;
     }
@@ -71,6 +71,7 @@ public class Resource implements Serializable {
      *
      * @return the object Psychologist.
      */
+    @XmlTransient
     public Psychologist getPsychologist() {
         return psychologist;
     }

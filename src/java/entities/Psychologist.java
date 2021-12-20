@@ -10,11 +10,11 @@ import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity for the psychologist, it extends from the entity User which gives the
@@ -37,20 +37,11 @@ public class Psychologist extends User implements Serializable{
      */
     
     private String office;
-    @OneToMany(mappedBy="psychologist")
+    @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER)
     private Set<Resource> resources;
-    @OneToMany(mappedBy="psychologist")
+    @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.specialization);
-        hash = 97 * hash + Objects.hashCode(this.office);
-        hash = 97 * hash + Objects.hashCode(this.resources);
-        hash = 97 * hash + Objects.hashCode(this.appointments);
-        return hash;
-    }
 
     @Override
     public boolean equals(Object obj) {

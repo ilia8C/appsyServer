@@ -18,6 +18,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -42,6 +43,7 @@ public class ClientResource implements Serializable {
     private Client client;
     private String typeDiagnose;
 
+    @XmlTransient
     public Client getClient(){
         return this.client;
     }

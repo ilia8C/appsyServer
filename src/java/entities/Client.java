@@ -19,7 +19,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This class is for the Client entity, it has the attributes: dateStart and the
@@ -37,20 +36,13 @@ public class Client extends User implements Serializable{
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateStart;
     
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
     
-     @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<ClientResource> clientResources;
      
-       @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + Objects.hashCode(this.dateStart);
-        hash = 67 * hash + Objects.hashCode(this.appointments);
-        hash = 67 * hash + Objects.hashCode(this.clientResources);
-        return hash;
-    }
+   
 
     @Override
     public boolean equals(Object obj) {

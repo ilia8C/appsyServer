@@ -23,7 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This class is for the User entity is has this attributes: id, password,
@@ -50,7 +49,7 @@ public class User implements Serializable {
     private String email;
     @Column(name = "login", unique = true)
     private String login;
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
     private Set<LastSignIn> lastSignIns;
 
     public Integer getId() {
@@ -165,13 +164,6 @@ public class User implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + Objects.hashCode(this.id);
-        hash = 31 * hash + Objects.hashCode(this.password);
-        hash = 31 * hash + Objects.hashCode(this.enumPrivilege);
-        hash = 31 * hash + Objects.hashCode(this.enumStatus);
-        hash = 31 * hash + Objects.hashCode(this.fullName);
-        hash = 31 * hash + Objects.hashCode(this.email);
-        hash = 31 * hash + Objects.hashCode(this.login);
-        hash = 31 * hash + Objects.hashCode(this.lastSignIns);
         return hash;
     }
 
