@@ -8,7 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,7 +23,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -41,7 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
             name = "findUserByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
     ),
     @NamedQuery(
-            name = "resetPasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
+            name = "resetPasswordByEmail", query = "SELECT u FROM User u  WHERE u.email=:email"
     ),
     @NamedQuery(
             name = "changePasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
@@ -66,7 +65,7 @@ public class User implements Serializable {
     private String email;
     @Column(name = "login", unique = true)
     private String login;
-    @OneToMany(mappedBy="user",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="user",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<LastSignIn> lastSignIns;
 
     public Integer getId() {
