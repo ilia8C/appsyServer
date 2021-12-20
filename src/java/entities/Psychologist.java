@@ -8,12 +8,10 @@ package entities;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,58 +22,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Ilia Consuegra
  */
 @Entity
-@Table(name="psychologist", schema="appsydb")
+@Table(name = "psychologist", schema = "appsydb")
 @XmlRootElement
-public class Psychologist extends User implements Serializable{
+public class Psychologist extends User implements Serializable {
 
-    
     //@GeneratedValue(strategy = GenerationType.AUTO)
     private static final long serialVersionUID = 1L;
     private String specialization;
     /**
      * The attribute for the office of the psychologist
      */
-    
+
     private String office;
     @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER)
     private Set<Resource> resources;
     @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Psychologist other = (Psychologist) obj;
-        if (!Objects.equals(this.specialization, other.specialization)) {
-            return false;
-        }
-        if (!Objects.equals(this.office, other.office)) {
-            return false;
-        }
-        if (!Objects.equals(this.resources, other.resources)) {
-            return false;
-        }
-        if (!Objects.equals(this.appointments, other.appointments)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Psychologist{" + "specialization=" + specialization + ", office=" + office + ", resources=" + resources + ", appointments=" + appointments + '}';
-    }
-
-   
 
     /**
      * @return the specialization
@@ -108,8 +70,7 @@ public class Psychologist extends User implements Serializable{
     /**
      * @return the resources
      */
-    
-    
+
     public Set<Resource> getResources() {
         return resources;
     }
@@ -124,8 +85,7 @@ public class Psychologist extends User implements Serializable{
     /**
      * @return the appointments
      */
-    
-    
+
     public Set<Appointment> getAppointments() {
         return appointments;
     }
@@ -138,4 +98,3 @@ public class Psychologist extends User implements Serializable{
     }
 
 
-}

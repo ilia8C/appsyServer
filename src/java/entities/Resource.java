@@ -6,21 +6,20 @@
 package entities;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -29,8 +28,17 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Matteo Fernández
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "getAllResourcesByTittle", query = "SELECT r FROM Resource r WHERE r.tittle=:tittle"
+    ),
+    @NamedQuery(
+            name = "getAllResourcesByPsychologist", query = "SELECT r FROM Resource r WHERE r.psychologist.id=:id"
+    )
+})
+
 @Entity
-@Table(name="resource",schema="appsydb")
+@Table(name = "resource", schema = "appsydb")
 @XmlRootElement
 public class Resource implements Serializable {
 
@@ -38,7 +46,7 @@ public class Resource implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private Psychologist psychologist;
     private String link;
     @Temporal(TemporalType.TIMESTAMP)
@@ -52,7 +60,7 @@ public class Resource implements Serializable {
      *
      * @return a list of ClientResources.
      */
-    @XmlTransient
+@XmlTransient
     public Set<ClientResource> getClientResource() {
         return clientResource;
     }
@@ -181,6 +189,5 @@ public class Resource implements Serializable {
     public String toString() {
         return "entities.Resource[ id=" + id + " ]";
     }
-    
 
 }

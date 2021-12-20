@@ -8,7 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,9 +19,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -30,6 +31,20 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Alain Lozano Isasi
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "findUserByLoginAndPassword", query = "SELECT u FROM User u WHERE u.login=:login and u.password=:password"
+    ),
+    @NamedQuery(
+            name = "findUserByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
+    ),
+    @NamedQuery(
+            name = "resetPasswordByEmail", query = "SELECT u FROM User u  WHERE u.email=:email"
+    ),
+    @NamedQuery(
+            name = "changePasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
+    ),
+})
 @Entity
 @Table(name = "user", schema = "appsydb")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -49,7 +64,8 @@ public class User implements Serializable {
     private String email;
     @Column(name = "login", unique = true)
     private String login;
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="user",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
+
     private Set<LastSignIn> lastSignIns;
 
     public Integer getId() {
@@ -63,6 +79,7 @@ public class User implements Serializable {
     /**
      * @return the password
      */
+    @XmlTransient
     public String getPassword() {
         return password;
     }
@@ -147,8 +164,7 @@ public class User implements Serializable {
     /**
      * @return the lastSignins
      */
-    
-    
+
     public Set<LastSignIn> getLastSignins() {
         return lastSignIns;
     }
@@ -160,12 +176,14 @@ public class User implements Serializable {
         this.lastSignIns = lastSignIns;
     }
 
-    @Override
+   @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.id);
+        hash = 79 * hash + Objects.hashCode(this.id);
         return hash;
     }
+
+    
 
     @Override
     public boolean equals(Object obj) {

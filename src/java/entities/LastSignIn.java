@@ -6,7 +6,6 @@
 package entities;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -18,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -79,10 +77,12 @@ public class LastSignIn implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.id);
+        int hash = 5;
+        hash = 37 * hash + Objects.hashCode(this.id);
         return hash;
     }
+
+    
 
     @Override
     public boolean equals(Object obj) {
@@ -112,8 +112,5 @@ public class LastSignIn implements Serializable {
     public String toString() {
         return "LastSignIn{" + "id=" + id + ", idUser=" + user + ", lastSignIn=" + lastSignIn + '}';
     }
-    
-    
-    
-    
+
 }

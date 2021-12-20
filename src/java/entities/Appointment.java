@@ -19,13 +19,12 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Entity for the appointments, it has the attributes: psychologist, client, date, diagnose, numApppointment and price.
- * Ilia Consuegra
+ * Entity for the appointments, it has the attributes: psychologist, client,
+ * date, diagnose, numApppointment and price. Ilia Consuegra
  */
 @NamedQueries({
     @NamedQuery(
@@ -40,13 +39,12 @@ import javax.xml.bind.annotation.XmlTransient;
     )
 })
 @Entity
-@Table(name="appointment", schema="appsydb")
+@Table(name = "appointment", schema = "appsydb")
 @XmlRootElement
 public class Appointment implements Serializable {
 
     private static long serialVersionUID = 1L;
-    
-   
+
     @EmbeddedId
     private AppointmentId appointmentId;
     //@MapsId("psychologistId")
@@ -63,7 +61,7 @@ public class Appointment implements Serializable {
     private Integer numAppointment;
     private Float price;
 
-    @Override
+   @Override
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.appointmentId);
@@ -108,11 +106,6 @@ public class Appointment implements Serializable {
         return "Appointment{" + "appointmentId=" + appointmentId + ", psychologist=" + psychologist + ", client=" + client + ", date=" + date + ", diagnose=" + diagnose + ", numAppointment=" + numAppointment + ", price=" + price + '}';
     }
 
-    
-
-   
-    
-
     /**
      * @return the serialVersionUID
      */
@@ -141,7 +134,6 @@ public class Appointment implements Serializable {
         this.appointmentId = appointmentId;
     }
 
-    
     /**
      * @return the psychologist
      */
@@ -171,7 +163,7 @@ public class Appointment implements Serializable {
     public void setClient(Client client) {
         this.client = client;
     }
-    
+
     /**
      * @return the date
      */

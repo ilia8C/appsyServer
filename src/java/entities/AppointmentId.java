@@ -8,18 +8,17 @@ package entities;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Embeddable;
-import javax.persistence.Table;
 
 /**
  *
  * @author 2dam
  */
 @Embeddable
-public class AppointmentId implements Serializable{
+public class AppointmentId implements Serializable {
 
     private Integer psychologistId;
     private Integer clientId;
-    
+
     public AppointmentId() {
     }
 
@@ -52,7 +51,7 @@ public class AppointmentId implements Serializable{
         }
         return true;
     }
-    
+
     /**
      * @return the psychologistId
      */
@@ -80,5 +79,5 @@ public class AppointmentId implements Serializable{
     public void setClientId(Integer clientId) {
         this.clientId = clientId;
     }
-   
+
 }
