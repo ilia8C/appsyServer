@@ -64,14 +64,14 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
 
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void create(Appointment entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") PathSegment id, Appointment entity) {
         super.edit(entity);
     }
@@ -85,7 +85,7 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public Appointment find(@PathParam("id") PathSegment id) {
         entities.AppointmentId key = getPrimaryKey(id);
         return super.find(key);
@@ -93,14 +93,14 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
 
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<Appointment> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<Appointment> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
@@ -128,6 +128,24 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
         return appointments;
         
     }
+    
+    @GET
+    @Path("clientId/{clientId}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Appointment> findAppointmentsByClient (@PathParam("clientId") Integer clientId){
+        Set<Appointment> appointments = null;
+        try{
+            appointments = new HashSet<>(em.createNamedQuery("findAppointmentsByClient")
+                .setParameter("clientId", clientId)
+                .getResultList());
+        
+        }catch(Exception e){
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        }
+        return appointments;
+        
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;

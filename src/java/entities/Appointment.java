@@ -31,7 +31,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
             name = "findAppointmentsByPsychologist", 
            query="SELECT a FROM Appointment a, Psychologist p WHERE p.id=:psychologistId and a.psychologist.id=p.id"
-                 //  SELECT s FROM Subject s, CourseSubject cs WHERE cs.course.idCourse=:idCourse and cs.subject.idSubject=s.idSubject
+                
+    ),
+    @NamedQuery(
+        name = "findAppointmentsByClient", 
+       query="SELECT a FROM Appointment a, Client c WHERE c.id=:clientId and a.client.id=c.id"
+             
     )
 })
 @Entity
