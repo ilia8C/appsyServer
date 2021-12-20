@@ -165,7 +165,7 @@ public class Resource implements Serializable {
         this.tittle = tittle;
     }
 
-      @Override
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

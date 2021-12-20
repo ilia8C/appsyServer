@@ -56,7 +56,7 @@ public class ResourceFacadeREST extends AbstractFacade<Resource> {
     /**
      * Edits the resource by id
      *
-     * @param id
+     * @param id of the resources
      * @param entity
      */
     @PUT
@@ -69,7 +69,7 @@ public class ResourceFacadeREST extends AbstractFacade<Resource> {
     /**
      * Deletes de resource by id
      *
-     * @param id
+     * @param id of the resources
      */
     @DELETE
     @Path("{id}")
@@ -80,7 +80,7 @@ public class ResourceFacadeREST extends AbstractFacade<Resource> {
     /**
      * Gets the resources by id
      *
-     * @param id
+     * @param id of the resources
      * @return
      */
     @GET
@@ -117,9 +117,11 @@ public class ResourceFacadeREST extends AbstractFacade<Resource> {
     }
 
     /**
+     * Gets a list for all the resources with the tittle its given.
      *
-     * @param tittle
-     * @return
+     * @param tittle the one that you want to search
+     *
+     * @return resources
      */
     @GET
     @Path("getResourcesByTittle/{tittle}")
@@ -131,9 +133,12 @@ public class ResourceFacadeREST extends AbstractFacade<Resource> {
     }
 
     /**
+     * Gets a list for all the resources with the Psychologist that has added
+     * it, looking by the id of the psychologist.
      *
-     * @param id
-     * @return
+     * @param id of the psychologist that wants to search
+     *
+     * @return resources
      */
     @GET
     @Path("getResourcesByPsychologistId/{id}")
