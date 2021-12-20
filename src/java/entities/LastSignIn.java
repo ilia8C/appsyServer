@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,7 +35,7 @@ public class LastSignIn implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private User user; 
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSignIn;
@@ -49,6 +51,7 @@ public class LastSignIn implements Serializable {
     /**
      * @return the idUser
      */
+    @XmlTransient
     public User getUser() {
         return user;
     }
@@ -76,12 +79,12 @@ public class LastSignIn implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.user);
-        hash = 67 * hash + Objects.hashCode(this.lastSignIn);
+        int hash = 5;
+        hash = 37 * hash + Objects.hashCode(this.id);
         return hash;
     }
+
+    
 
     @Override
     public boolean equals(Object obj) {

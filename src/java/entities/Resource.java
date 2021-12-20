@@ -38,13 +38,13 @@ public class Resource implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private Psychologist psychologist;
     private String link;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
     private String tittle;
-    @OneToMany(mappedBy = "resource")
+    @OneToMany(mappedBy = "resource",fetch=FetchType.EAGER)
     private Set<ClientResource> clientResource;
 
     /**
@@ -71,6 +71,7 @@ public class Resource implements Serializable {
      *
      * @return the object Psychologist.
      */
+    @XmlTransient
     public Psychologist getPsychologist() {
         return psychologist;
     }
