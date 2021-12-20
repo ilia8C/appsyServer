@@ -6,20 +6,16 @@
 package entities;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This class is for the Client entity, it has the attributes: dateStart and the
@@ -29,21 +25,21 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Alain Lozano Isasi
  */
 @Entity
-@Table(name = "client", schema = "appsydb") 
+@Table(name = "client", schema = "appsydb")
 @XmlRootElement
-public class Client extends User implements Serializable{
+public class Client extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateStart;
-    
-    @OneToMany(mappedBy = "client")
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
-    
-     @OneToMany(mappedBy = "client")
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<ClientResource> clientResources;
-     
-       @Override
+
+    @Override
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.dateStart);
@@ -90,13 +86,9 @@ public class Client extends User implements Serializable{
         this.dateStart = dateStart;
     }
 
-    
-     
     /**
      * @return the appointments
      */
-    
-    @XmlTransient
     public Set<Appointment> getAppointments() {
         return appointments;
     }
@@ -111,8 +103,6 @@ public class Client extends User implements Serializable{
     /**
      * @return the clientResources
      */
-    
-    @XmlTransient
     public Set<ClientResource> getClientResources() {
         return clientResources;
     }
@@ -123,6 +113,5 @@ public class Client extends User implements Serializable{
     public void setClientResources(Set<ClientResource> clientResources) {
         this.clientResources = clientResources;
     }
-    
 
 }

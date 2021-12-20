@@ -55,7 +55,7 @@ public class IdClientResource implements Serializable {
         }
         return true;
     }
-    
+
     /**
      * @return the idClient
      */
@@ -83,7 +83,5 @@ public class IdClientResource implements Serializable {
     public void setIdResource(Integer idResource) {
         this.idResource = idResource;
     }
-
-   
 
 }

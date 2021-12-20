@@ -10,36 +10,35 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * Entity for the appointments, it has the attributes: psychologist, client, date, diagnose, numApppointment and price.
- * Ilia Consuegra
+ * Entity for the appointments, it has the attributes: psychologist, client,
+ * date, diagnose, numApppointment and price. Ilia Consuegra
  */
 @Entity
-@Table(name="appointment", schema="appsydb")
+@Table(name = "appointment", schema = "appsydb")
 @XmlRootElement
 public class Appointment implements Serializable {
 
     private static long serialVersionUID = 1L;
-    
-   
+
     @EmbeddedId
     private AppointmentId appointmentId;
     //@MapsId("psychologistId")
-    @ManyToOne
-    @JoinColumn(name="psychologistId",updatable=false,insertable=false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "psychologistId", updatable = false, insertable = false)
     private Psychologist psychologist;
     //@MapsId("clientId")
-    @ManyToOne
-    @JoinColumn(name="clientId",updatable=false,insertable=false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "clientId", updatable = false, insertable = false)
     private Client client;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
@@ -49,13 +48,8 @@ public class Appointment implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + Objects.hashCode(this.appointmentId);
-        hash = 67 * hash + Objects.hashCode(this.psychologist);
-        hash = 67 * hash + Objects.hashCode(this.client);
-        hash = 67 * hash + Objects.hashCode(this.date);
-        hash = 67 * hash + Objects.hashCode(this.diagnose);
-        hash = 67 * hash + Objects.hashCode(this.numAppointment);
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.appointmentId);
         return hash;
     }
 
@@ -97,11 +91,6 @@ public class Appointment implements Serializable {
         return "Appointment{" + "appointmentId=" + appointmentId + ", psychologist=" + psychologist + ", client=" + client + ", date=" + date + ", diagnose=" + diagnose + ", numAppointment=" + numAppointment + ", price=" + price + '}';
     }
 
-    
-
-   
-    
-
     /**
      * @return the serialVersionUID
      */
@@ -130,10 +119,10 @@ public class Appointment implements Serializable {
         this.appointmentId = appointmentId;
     }
 
-    
     /**
      * @return the psychologist
      */
+    @XmlTransient
     public Psychologist getPsychologist() {
         return psychologist;
     }
@@ -148,6 +137,7 @@ public class Appointment implements Serializable {
     /**
      * @return the client
      */
+    @XmlTransient
     public Client getClient() {
         return client;
     }
@@ -158,7 +148,7 @@ public class Appointment implements Serializable {
     public void setClient(Client client) {
         this.client = client;
     }
-    
+
     /**
      * @return the date
      */

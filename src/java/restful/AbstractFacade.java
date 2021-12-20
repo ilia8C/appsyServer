@@ -5,6 +5,7 @@
  */
 package restful;
 
+import entities.Resource;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -61,4 +62,16 @@ public abstract class AbstractFacade<T> {
         return ((Long) q.getSingleResult()).intValue();
     }
     
+    /**
+     *
+     * @param tittle
+     * @return
+     */
+    /* public  List<Resource> getAllResourcesByTittle(String tittle){
+    return getEntityManager()
+    .createNamedQuery("getAllResourcesByTittle")
+    .setParameter("tittle", tittle)
+    .getResultList();
+    }
+    */
 }

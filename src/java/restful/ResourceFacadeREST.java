@@ -6,7 +6,10 @@
 package restful;
 
 import entities.Resource;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,12 +24,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
+ * Defines REST services for the Resource entity.
  *
- * @author 2dam
+ * @author Matteo Fernández
  */
 @Stateless
 @Path("entities.resource")
 public class ResourceFacadeREST extends AbstractFacade<Resource> {
+
+    private static final Logger LOGGER = Logger.getLogger(ResourceFacadeREST.class.getName());
 
     @PersistenceContext(unitName = "AppsyServerPU")
     private EntityManager em;
@@ -35,57 +41,112 @@ public class ResourceFacadeREST extends AbstractFacade<Resource> {
         super(Resource.class);
     }
 
+    /**
+     * Creates a new Resource
+     *
+     * @param entity
+     */
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void create(Resource entity) {
         super.create(entity);
     }
 
+    /**
+     * Edits the resource by id
+     *
+     * @param id
+     * @param entity
+     */
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, Resource entity) {
         super.edit(entity);
     }
 
+    /**
+     * Deletes de resource by id
+     *
+     * @param id
+     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
         super.remove(super.find(id));
     }
 
+    /**
+     * Gets the resources by id
+     *
+     * @param id
+     * @return
+     */
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public Resource find(@PathParam("id") Integer id) {
         return super.find(id);
     }
 
+    /**
+     * Gets a list of all resources
+     *
+     * @return
+     */
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<Resource> findAll() {
         return super.findAll();
     }
 
+    /**
+     * Gets a list for all the existence resources
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     @GET
     @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<Resource> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
+    /**
+     *
+     * @param tittle
+     * @return
+     */
     @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
+    @Path("getResourcesByTittle/{tittle}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Resource> getAllResourcesByTittle(@PathParam("tittle") String tittle) {
+        Set<Resource> resources = null;
+        resources = new HashSet<>(em.createNamedQuery("getAllResourcesByTittle").setParameter("tittle", tittle).getResultList());
+        return resources;
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @GET
+    @Path("getResourcesByPsychologistId/{id}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Resource> getAllResourcesByPsychologist(@PathParam("id") Integer id) {
+        Set<Resource> resources = null;
+        resources = new HashSet<>(em.createNamedQuery("getAllResourcesByPsychologist").setParameter("id", id).getResultList());
+        return resources;
     }
 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
