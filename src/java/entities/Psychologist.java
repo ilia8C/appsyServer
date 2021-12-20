@@ -34,10 +34,11 @@ public class Psychologist extends User implements Serializable {
      */
 
     private String office;
-    @OneToMany(mappedBy="psychologist",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER)
     private Set<Resource> resources;
-    @OneToMany(mappedBy="psychologist",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
+
     /**
      * @return the specialization
      */
@@ -69,6 +70,7 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the resources
      */
+
     public Set<Resource> getResources() {
         return resources;
     }
@@ -83,6 +85,7 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the appointments
      */
+
     public Set<Appointment> getAppointments() {
         return appointments;
     }
@@ -94,4 +97,4 @@ public class Psychologist extends User implements Serializable {
         this.appointments = appointments;
     }
 
-}
+

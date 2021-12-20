@@ -33,11 +33,13 @@ public class Client extends User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateStart;
     
+
     @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<Appointment> appointments;
     
      @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<ClientResource> clientResources;
+
 
     /**
      * @return the dateStart
@@ -56,6 +58,7 @@ public class Client extends User implements Serializable {
     /**
      * @return the appointments
      */
+
     public Set<Appointment> getAppointments() {
         return appointments;
     }
@@ -70,6 +73,7 @@ public class Client extends User implements Serializable {
     /**
      * @return the clientResources
      */
+
     public Set<ClientResource> getClientResources() {
         return clientResources;
     }

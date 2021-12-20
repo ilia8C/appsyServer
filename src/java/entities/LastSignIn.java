@@ -33,7 +33,7 @@ public class LastSignIn implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user; 
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSignIn;

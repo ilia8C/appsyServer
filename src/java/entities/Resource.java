@@ -52,7 +52,7 @@ public class Resource implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
     private String tittle;
-    @OneToMany(mappedBy = "resource",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "resource", fetch = FetchType.EAGER)
     private Set<ClientResource> clientResource;
 
     /**

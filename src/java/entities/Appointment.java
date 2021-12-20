@@ -13,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,6 +26,18 @@ import javax.xml.bind.annotation.XmlTransient;
  * Entity for the appointments, it has the attributes: psychologist, client,
  * date, diagnose, numApppointment and price. Ilia Consuegra
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "findAppointmentsByPsychologist", 
+           query="SELECT a FROM Appointment a, Psychologist p WHERE p.id=:psychologistId and a.psychologist.id=p.id"
+                
+    ),
+    @NamedQuery(
+        name = "findAppointmentsByClient", 
+       query="SELECT a FROM Appointment a, Client c WHERE c.id=:clientId and a.client.id=c.id"
+             
+    )
+})
 @Entity
 @Table(name = "appointment", schema = "appsydb")
 @XmlRootElement
@@ -33,11 +48,11 @@ public class Appointment implements Serializable {
     @EmbeddedId
     private AppointmentId appointmentId;
     //@MapsId("psychologistId")
-    @ManyToOne(fetch=FetchType.EAGER)  
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="psychologistId",updatable=false,insertable=false)
     private Psychologist psychologist;
     //@MapsId("clientId")
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="clientId",updatable=false,insertable=false)
     private Client client;
     @Temporal(TemporalType.TIMESTAMP)
@@ -48,8 +63,8 @@ public class Appointment implements Serializable {
 
    @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.appointmentId);
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode(this.appointmentId);
         return hash;
     }
 
