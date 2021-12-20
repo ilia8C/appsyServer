@@ -60,14 +60,14 @@ public class ClientResourceFacadeREST extends AbstractFacade<ClientResource> {
 
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void create(ClientResource entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") PathSegment id, ClientResource entity) {
         super.edit(entity);
     }
@@ -81,7 +81,7 @@ public class ClientResourceFacadeREST extends AbstractFacade<ClientResource> {
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public ClientResource find(@PathParam("id") PathSegment id) {
         entities.IdClientResource key = getPrimaryKey(id);
         return super.find(key);
@@ -89,14 +89,14 @@ public class ClientResourceFacadeREST extends AbstractFacade<ClientResource> {
 
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<ClientResource> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<ClientResource> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }

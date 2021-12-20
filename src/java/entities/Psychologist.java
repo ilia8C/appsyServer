@@ -34,11 +34,10 @@ public class Psychologist extends User implements Serializable {
      */
 
     private String office;
-    @OneToMany(mappedBy = "psychologist", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="psychologist",fetch=FetchType.EAGER)
     private Set<Resource> resources;
-    @OneToMany(mappedBy = "psychologist", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="psychologist",fetch=FetchType.EAGER)
     private Set<Appointment> appointments;
-
     /**
      * @return the specialization
      */

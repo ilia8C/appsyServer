@@ -33,8 +33,8 @@ public class LastSignIn implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private User user;
+    @ManyToOne(fetch=FetchType.EAGER)
+    private User user; 
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSignIn;
 
@@ -81,6 +81,8 @@ public class LastSignIn implements Serializable {
         hash = 37 * hash + Objects.hashCode(this.id);
         return hash;
     }
+
+    
 
     @Override
     public boolean equals(Object obj) {

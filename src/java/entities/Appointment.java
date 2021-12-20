@@ -33,12 +33,12 @@ public class Appointment implements Serializable {
     @EmbeddedId
     private AppointmentId appointmentId;
     //@MapsId("psychologistId")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "psychologistId", updatable = false, insertable = false)
+    @ManyToOne(fetch=FetchType.EAGER)  
+    @JoinColumn(name="psychologistId",updatable=false,insertable=false)
     private Psychologist psychologist;
     //@MapsId("clientId")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "clientId", updatable = false, insertable = false)
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="clientId",updatable=false,insertable=false)
     private Client client;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
@@ -46,7 +46,7 @@ public class Appointment implements Serializable {
     private Integer numAppointment;
     private Float price;
 
-    @Override
+   @Override
     public int hashCode() {
         int hash = 3;
         hash = 53 * hash + Objects.hashCode(this.appointmentId);

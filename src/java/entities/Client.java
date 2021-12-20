@@ -32,45 +32,12 @@ public class Client extends User implements Serializable {
     private static final long serialVersionUID = 1L;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateStart;
-
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
+    
+    @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<Appointment> appointments;
-
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
+    
+     @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<ClientResource> clientResources;
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + Objects.hashCode(this.dateStart);
-        hash = 67 * hash + Objects.hashCode(this.appointments);
-        hash = 67 * hash + Objects.hashCode(this.clientResources);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Client other = (Client) obj;
-        if (!Objects.equals(this.dateStart, other.dateStart)) {
-            return false;
-        }
-        if (!Objects.equals(this.appointments, other.appointments)) {
-            return false;
-        }
-        if (!Objects.equals(this.clientResources, other.clientResources)) {
-            return false;
-        }
-        return true;
-    }
 
     /**
      * @return the dateStart
