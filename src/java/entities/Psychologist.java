@@ -96,5 +96,6 @@ public class Psychologist extends User implements Serializable {
     public void setAppointments(Set<Appointment> appointments) {
         this.appointments = appointments;
     }
+}
 
 
