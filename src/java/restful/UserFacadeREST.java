@@ -42,14 +42,14 @@ public class UserFacadeREST extends AbstractFacade<User> {
 
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void create(User entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, User entity) {
         super.edit(entity);
     }
@@ -62,21 +62,21 @@ public class UserFacadeREST extends AbstractFacade<User> {
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public User find(@PathParam("id") Integer id) {
         return super.find(id);
     }
 
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<User> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<User> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
@@ -130,7 +130,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})   
     public void resetPasswordByLogin(@PathParam("login") String login) throws Exception {
         User user = null;
-        String password="abcd*123";
+        String password="abcd*1234";
         try{
             user= (User) em.createNamedQuery("resetPasswordByLogin")
                     .setParameter("login", login)
@@ -144,7 +144,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
         }
     }
     @GET
-    @Path("changePassword/{login}")
+    @Path("changePassword/{login}/{password}")
     @Produces({MediaType.APPLICATION_XML})   
     public void changePasswordByLogin(@PathParam("login") String login,@PathParam("password") String password) throws Exception {
         User user = null;
