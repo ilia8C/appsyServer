@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -37,54 +38,11 @@ public class Psychologist extends User implements Serializable{
      */
     
     private String office;
-    @OneToMany(mappedBy="psychologist")
+    @OneToMany(mappedBy="psychologist",fetch=FetchType.EAGER)
     private Set<Resource> resources;
-    @OneToMany(mappedBy="psychologist")
+    @OneToMany(mappedBy="psychologist",fetch=FetchType.EAGER)
     private Set<Appointment> appointments;
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.specialization);
-        hash = 97 * hash + Objects.hashCode(this.office);
-        hash = 97 * hash + Objects.hashCode(this.resources);
-        hash = 97 * hash + Objects.hashCode(this.appointments);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Psychologist other = (Psychologist) obj;
-        if (!Objects.equals(this.specialization, other.specialization)) {
-            return false;
-        }
-        if (!Objects.equals(this.office, other.office)) {
-            return false;
-        }
-        if (!Objects.equals(this.resources, other.resources)) {
-            return false;
-        }
-        if (!Objects.equals(this.appointments, other.appointments)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Psychologist{" + "specialization=" + specialization + ", office=" + office + ", resources=" + resources + ", appointments=" + appointments + '}';
-    }
-
-   
 
     /**
      * @return the specialization
@@ -117,8 +75,6 @@ public class Psychologist extends User implements Serializable{
     /**
      * @return the resources
      */
-    
-    @XmlTransient
     public Set<Resource> getResources() {
         return resources;
     }
@@ -133,8 +89,6 @@ public class Psychologist extends User implements Serializable{
     /**
      * @return the appointments
      */
-    
-    @XmlTransient
     public Set<Appointment> getAppointments() {
         return appointments;
     }

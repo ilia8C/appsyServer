@@ -19,6 +19,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -31,6 +33,20 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Alain Lozano Isasi
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "findUserByLoginAndPassword", query = "SELECT u FROM User u WHERE u.login=:login and u.password=:password"
+    ),
+    @NamedQuery(
+            name = "findUserByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
+    ),
+    @NamedQuery(
+            name = "resetPasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
+    ),
+    @NamedQuery(
+            name = "changePasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
+    ),
+})
 @Entity
 @Table(name = "user", schema = "appsydb")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -50,7 +66,7 @@ public class User implements Serializable {
     private String email;
     @Column(name = "login", unique = true)
     private String login;
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user",fetch=FetchType.EAGER)
     private Set<LastSignIn> lastSignIns;
 
     public Integer getId() {
@@ -64,6 +80,7 @@ public class User implements Serializable {
     /**
      * @return the password
      */
+    @XmlTransient
     public String getPassword() {
         return password;
     }
@@ -148,8 +165,6 @@ public class User implements Serializable {
     /**
      * @return the lastSignins
      */
-    
-    @XmlTransient
     public Set<LastSignIn> getLastSignins() {
         return lastSignIns;
     }
@@ -164,16 +179,11 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.id);
-        hash = 31 * hash + Objects.hashCode(this.password);
-        hash = 31 * hash + Objects.hashCode(this.enumPrivilege);
-        hash = 31 * hash + Objects.hashCode(this.enumStatus);
-        hash = 31 * hash + Objects.hashCode(this.fullName);
-        hash = 31 * hash + Objects.hashCode(this.email);
-        hash = 31 * hash + Objects.hashCode(this.login);
-        hash = 31 * hash + Objects.hashCode(this.lastSignIns);
+        hash = 79 * hash + Objects.hashCode(this.id);
         return hash;
     }
+
+    
 
     @Override
     public boolean equals(Object obj) {

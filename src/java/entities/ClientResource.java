@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,15 +35,15 @@ public class ClientResource implements Serializable {
     @EmbeddedId
     private IdClientResource idClientResource;
     //@MapsId("idResource")
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="idResource",updatable=false,insertable=false)
     private Resource resource;
     //@MapsId("idClient")
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="idClient",updatable=false,insertable=false)
     private Client client;
     private String typeDiagnose;
-
+    @XmlTransient
     public Client getClient(){
         return this.client;
     }
