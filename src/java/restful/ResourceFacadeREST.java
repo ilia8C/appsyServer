@@ -149,6 +149,20 @@ public class ResourceFacadeREST extends AbstractFacade<Resource> {
         return resources;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @GET
+    @Path("getPsychologistByResourcesId/{id}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Resource> getPsychologistByResourcesId(@PathParam("id") Integer id) {
+        Set<Resource> resources = null;
+        resources = new HashSet<>(em.createNamedQuery("getPsychologistByResourcesId").setParameter("id", id).getResultList());
+        return resources;
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;

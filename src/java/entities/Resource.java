@@ -34,6 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
     ),
     @NamedQuery(
             name = "getAllResourcesByPsychologist", query = "SELECT r FROM Resource r WHERE r.psychologist.id=:id"
+    ),
+    @NamedQuery(
+            name = "getPsychologistByResourcesId", query = "SELECT r FROM Resource r, Psychologist p WHERE r.psychologist.id=p.id and r.id=:id"
     )
 })
 
