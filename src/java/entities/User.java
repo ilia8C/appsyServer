@@ -45,6 +45,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
             name = "changePasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
     ),
+    @NamedQuery(
+            name = "lastSignInsByLogin", query = "SELECT l FROM LastSignIn l WHERE l.user.login =(SELECT u.login FROM User u WHERE u.login=:login) ORDER BY l.lastSignIn ASC"
+    ),
 })
 @Entity
 @Table(name = "user", schema = "appsydb")

@@ -5,7 +5,13 @@
  */
 package restful;
 
+import crypt.SendEmail;
+import entities.LastSignIn;
 import entities.User;
+import java.nio.charset.Charset;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +52,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(User entity) {
-           super.create(entity);
+        super.create(entity);
     }
 
     @PUT
@@ -105,6 +111,19 @@ public class UserFacadeREST extends AbstractFacade<User> {
                     .setParameter("login", login)
                     .setParameter("password", password)
                     .getSingleResult();
+            List<LastSignIn> lastSignIns = new ArrayList<>();
+            lastSignIns = (ArrayList) em.createNamedQuery("lastSignInsByLogin").setParameter("login", login).getResultList();
+            if (lastSignIns.size() < 2) {
+                LastSignIn lastSignIn = new LastSignIn();
+                lastSignIn.setId(null);
+                lastSignIn.setLastSignIn(new Date());
+                lastSignIn.setUser(user);
+                em.persist(lastSignIn);
+            } else {
+                LastSignIn lis = lastSignIns.get(0);
+                lis.setLastSignIn(new Date());
+                em.merge(lis);
+            }
         } catch (NoResultException e) {
             throw new NotAuthorizedException(e);
         } catch (Exception e) {
@@ -135,13 +154,18 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByEmail(@PathParam("email") String email) throws Exception {
         User user = null;
-        String password = generatePassword(8);
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[16];
+        random.nextBytes(bytes);
+        byte array[] = random.generateSeed(16);
+        String password = new String(array, Charset.forName("UTF-8"));;
         try {
             user = (User) em.createNamedQuery("resetPasswordByEmail")
                     .setParameter("email", email)
                     .getSingleResult();
             user.setPassword(password);
             em.merge(user);
+            SendEmail.sendEmail(email);
         } catch (NoResultException e) {
             throw new NotFoundException(e);
         } catch (Exception e) {
@@ -166,24 +190,4 @@ public class UserFacadeREST extends AbstractFacade<User> {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
         }
     }
-
-    private String generatePassword(int length) {
-        String NUMEROS = "0123456789";
-
-        String MAYUSCULAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        String MINUSCULAS = "abcdefghijklmnopqrstuvwxyz";
-
-        String key = NUMEROS+MAYUSCULAS+MINUSCULAS;
-
-        String pswd = "";
-
-        for (int i = 0; i < length; i++) {
-            pswd += (key.charAt((int) (Math.random() * key.length())));
-        }
-
-        return pswd;
-
-    }
-
 }
