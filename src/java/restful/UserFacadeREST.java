@@ -5,6 +5,7 @@
  */
 package restful;
 
+import crypt.EncriptDecript;
 import entities.User;
 import java.util.List;
 import java.util.logging.Level;
@@ -73,6 +74,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     @Produces({MediaType.APPLICATION_XML})
     public List<User> findAll() {
+        //EncriptDecript.cifrarTexto(, "abcd*1234")
         return super.findAll();
     }
 

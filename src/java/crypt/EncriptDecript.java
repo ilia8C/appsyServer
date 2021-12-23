@@ -21,6 +21,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
@@ -65,7 +66,7 @@ public class EncriptDecript {
             // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
             //byte[] combined = concatArrays(iv, encodedMessage);
             // Escribimos el fichero cifrado 
-            fileWriter("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Publica.dat", encodedMessage);
+            fileWriter("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\TextoCifrado.dat", encodedMessage);
 
             // Retornamos el texto cifrado
             mensajeCifrado = new String(encodedMessage);
@@ -82,22 +83,52 @@ public class EncriptDecript {
      *
      * @param clave La clave del usuario
      */
-    private static String descifrarTexto(RSAPrivateKey clave) {
+    /*
+public static String descifrar(String password) {
+KeyFactory factoriaRSA;
+PrivateKey privateKey;
+Cipher cipher;
+String desc = null;
+byte[]key = fileReader("D:\\year2\\RetoFinal-CrudApplication\\MazSolutionsServer\\PrivateKey.txt");
+try {
+PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
+factoriaRSA = KeyFactory.getInstance("RSA");
+privateKey = factoriaRSA.generatePrivate(spec);
+cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+// Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada
+cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+//IvParameterSpec ivParam = new IvParameterSpec(new byte[16]);
+// Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada y el ivParam
+byte[] cipherBytes = Base64.getDecoder().decode(password);
+cipher.init(Cipher.DECRYPT_MODE, privateKey);
+//Le decimos que descifre
+byte[] decodedMessage = cipher.doFinal(Arrays.copyOfRange(cipherBytes, 16,cipherBytes.length));
+// Texto descifrado
+desc = new String(decodedMessage);
+} catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+Logger.getLogger(Crypto.class.getName()).log(Level.SEVERE, null, ex);
+}
+return desc;
+}*/
+    private static String descifrarTexto(RSAPrivateKey privateKey, String mensaje) {
         String mensajeDescifrado = null;
         Cipher cipher = null;
+       
 
         // Fichero leído
-        byte[] fileContent = fileReader("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Privada.dat"); // Path del fichero EjemploRSA.dat
+       byte[] fileContent = fileReader("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\TextoCifradoHex.dat"); 
 
         try {
             // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "RSA/ECB/PKCS1Padding"
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            
 
             // Leemos el fichero codificado 
             //IvParameterSpec ivParam = new IvParameterSpec(Arrays.copyOfRange(fileContent, 0, 16));
             // Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada y el ivParam
-            cipher.init(DECRYPT_MODE, clave);
+            cipher.init(DECRYPT_MODE, privateKey);
             // Le decimos que descifre
+            
             byte[] decodedMessage = cipher.doFinal(fileContent);
 
             // Texto descifrado
@@ -179,12 +210,15 @@ public class EncriptDecript {
             String mensajeCifrado = cifrarTexto(publicKey, password);
             byte[] mensajeCifradoArray = mensajeCifrado.getBytes();
             String mensajeCifradoHex = hexadecimal(mensajeCifradoArray);
+            byte[] mensajeCifradoHexByte = mensajeCifradoHex.getBytes();
+            fileWriter("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\TextoCifradoHex.dat", mensajeCifradoHexByte);
             //String mensajeCifrado = ejemploRSA.cifrarTexto("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Publica.dat", "Mensaje super secreto");
             System.out.println("Cifrado! -> " + mensajeCifradoHex);
             System.out.println("-----------");
             byte[] mensajeByte = hexStringToByteArray(mensajeCifradoHex);
-            String mensaje = descifrarTexto(privateKey);
-            System.out.println("Descifrado! -> " + mensaje);
+            String mensaje = new String(mensajeByte);
+            String mensajeDescifrado = descifrarTexto(privateKey, mensaje);
+            System.out.println("Descifrado! -> " + mensajeDescifrado);
             System.out.println("-----------");
             mensajeHasheado = hashearTexto(mensajeCifrado);
 
