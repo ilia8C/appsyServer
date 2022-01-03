@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * User attributes: idUser, password, enumPrivilege, enumStatus, fullName, email
  * and login.
  *
- * @author Alain Lozano Isasi
+ * @author Ilia Consuegra
  */
 @Entity
 @Table(name = "client", schema = "appsydb")

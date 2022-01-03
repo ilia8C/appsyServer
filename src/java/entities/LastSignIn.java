@@ -21,8 +21,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
+ * This is the class for the signIn entity it has the attributtes: id,user and
+ * lastSignIn
  *
- * @author Usuario
+ * @author Alain Lozano
  */
 @Entity
 @Table(name = "lastSignIn", schema = "appsydb")
@@ -34,7 +36,7 @@ public class LastSignIn implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @ManyToOne(fetch = FetchType.EAGER)
-    private User user; 
+    private User user;
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSignIn;
 
@@ -82,8 +84,11 @@ public class LastSignIn implements Serializable {
         return hash;
     }
 
-    
-
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -107,7 +112,10 @@ public class LastSignIn implements Serializable {
         }
         return true;
     }
-
+    /**
+     * 
+     * @return 
+     */
     @Override
     public String toString() {
         return "LastSignIn{" + "id=" + id + ", idUser=" + user + ", lastSignIn=" + lastSignIn + '}';
