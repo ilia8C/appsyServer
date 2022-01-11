@@ -5,11 +5,15 @@
  */
 package restful;
 
+
 import crypt.SendEmail;
 import entities.LastSignIn;
 import entities.User;
 import java.util.ArrayList;
 import java.util.Date;
+import crypt.EncriptDecript;
+import entities.User;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,6 +86,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     @Produces({MediaType.APPLICATION_XML})
     public List<User> findAll() {
+        
         return super.findAll();
     }
 
@@ -114,9 +119,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
     public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception {
         User user = null;
         try {
+            String passwordEncrypt = EncriptDecript.encrypt(password);
+            System.out.println(passwordEncrypt);
+            String passwordHasheada = EncriptDecript.decrypt(passwordEncrypt);
+            System.out.println(passwordEncrypt);
             user = (User) em.createNamedQuery("findUserByLoginAndPassword")
                     .setParameter("login", login)
-                    .setParameter("password", password)
+                    .setParameter("password", passwordHasheada)
                     .getSingleResult();
             List<LastSignIn> lastSignIns = new ArrayList<>();
             lastSignIns = (ArrayList) em.createNamedQuery("lastSignInsByLogin").setParameter("login", login).getResultList();
@@ -167,12 +176,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByEmail(@PathParam("email") String email) throws Exception {
         User user = null;
-        String password = generatePassword(8);
+        String password = "abcd*1234";
         try {
+            String passwordHasheada = EncriptDecript.hashearTexto(password);
             user = (User) em.createNamedQuery("resetPasswordByEmail")
                     .setParameter("email", email)
                     .getSingleResult();
-            user.setPassword(password);
+            user.setPassword(passwordHasheada);
             em.merge(user);
             SendEmail.sendEmail(email, user.getPassword(), user.getLogin());
         } catch (NoResultException e) {
