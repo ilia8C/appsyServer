@@ -7,6 +7,7 @@ package restful;
 
 import crypt.EncriptDecript;
 import entities.User;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,8 +48,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(User entity) {
-           super.create(entity);
-    }
+        /*
+            String password = entity.getPassword();
+            String passwordHasheada = EncriptDecript.hashearTexto(password);
+            entity.setPassword(passwordHasheada);
+*/
+            super.create(entity);
+    }       
 
     @PUT
     @Path("{id}")
@@ -74,7 +80,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     @Produces({MediaType.APPLICATION_XML})
     public List<User> findAll() {
-        //EncriptDecript.cifrarTexto(, "abcd*1234")
+        
         return super.findAll();
     }
 
@@ -103,10 +109,15 @@ public class UserFacadeREST extends AbstractFacade<User> {
     public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception {
         User user = null;
         try {
+            String passwordEncrypt = EncriptDecript.encrypt(password);
+            System.out.println(passwordEncrypt);
+            String passwordHasheada = EncriptDecript.decrypt(passwordEncrypt);
+            System.out.println(passwordEncrypt);
             user = (User) em.createNamedQuery("findUserByLoginAndPassword")
                     .setParameter("login", login)
-                    .setParameter("password", password)
+                    .setParameter("password", passwordHasheada)
                     .getSingleResult();
+            
         } catch (NoResultException e) {
             throw new NotAuthorizedException(e);
         } catch (Exception e) {
@@ -137,12 +148,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByEmail(@PathParam("email") String email) throws Exception {
         User user = null;
-        String password = generatePassword(8);
+        String password = "abcd*1234";
         try {
+            String passwordHasheada = EncriptDecript.hashearTexto(password);
             user = (User) em.createNamedQuery("resetPasswordByEmail")
                     .setParameter("email", email)
                     .getSingleResult();
-            user.setPassword(password);
+            user.setPassword(passwordHasheada);
             em.merge(user);
         } catch (NoResultException e) {
             throw new NotFoundException(e);

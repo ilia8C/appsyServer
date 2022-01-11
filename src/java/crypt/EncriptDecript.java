@@ -8,6 +8,7 @@ package crypt;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -22,6 +23,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
@@ -35,7 +37,6 @@ import static javax.crypto.Cipher.ENCRYPT_MODE;
 public class EncriptDecript {
 
     // Fíjate que el String es de exactamente 16 bytes
-    private static byte[] salt = "esta es la salt!".getBytes();
 
     /**
      * Cifra un texto con RSA, modo ECB y padding PKCS5Padding (simétrica) y lo
@@ -45,13 +46,67 @@ public class EncriptDecript {
      * @param mensaje El mensaje a cifrar
      * @return Mensaje cifrado
      */
-    public static String cifrarTexto(RSAPublicKey clave, String mensaje) {
-        /*byte[] ret;
-        File file = new File(path);
+    
+    
+    public static String encrypt(String password) {
+        String mensajeCifradoHex = null;
         X509EncodedKeySpec keySpec = null;
-        KeyFactory keyFactory = null;*/
+        KeyFactory keyFactory = null;
+        try {
+            String path = EncriptDecript.class.getResource("Publica.dat").getPath();
+           
+            byte[] key = fileReader(path);
+
+            if (path != null) {
+                generarClaves();
+            }
+            keyFactory = KeyFactory.getInstance("RSA");
+            // Obtenemos el keySpec
+            keySpec = new X509EncodedKeySpec(key);
+            // Obtenemos una instancia de SecretKeyFactory con el algoritmo "PBKDF2WithHmacSHA1"
+            PublicKey publicKey = keyFactory.generatePublic(keySpec);
+
+            byte[] mensajeCifrado = cifrarTexto(publicKey, password);
+            mensajeCifradoHex = hexadecimal(mensajeCifrado);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return mensajeCifradoHex;
+    }
+    
+    
+    public static String decrypt(String mensajeCifradoHex){
+        String mensajeHasheado = null;
+        try {
+            
+            String path = EncriptDecript.class.getResource("Privada.dat").getPath();
+            byte[] key = fileReader(path);
+            
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(key);
+            KeyFactory factoria = KeyFactory.getInstance("RSA");
+            PrivateKey privada = factoria.generatePrivate(keySpec);
+            
+            String mensajeDescifrado = descifrarTexto(privada, mensajeCifradoHex);
+            mensajeHasheado = hashearTexto(mensajeDescifrado);
+            
+            System.out.println(mensajeHasheado);
+            
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return mensajeHasheado;
+    }
+    
+    
+    public static byte[] cifrarTexto(PublicKey clave, String mensaje) {
+       
         Cipher cipher = null;
         String mensajeCifrado = null;
+        byte[] encodedMessage = null;
         try {
             // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "RSA/ECB/PKCS1Padding"
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
@@ -59,22 +114,12 @@ public class EncriptDecript {
             // Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada
             cipher.init(ENCRYPT_MODE, clave);
             // Le decimos que cifre (método doFinal())
-            byte[] encodedMessage = cipher.doFinal(mensaje.getBytes());
-
-            // Obtenemos el vector CBC del Cipher (método getIV())
-            //byte[] iv = cipher.getIV();
-            // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
-            //byte[] combined = concatArrays(iv, encodedMessage);
-            // Escribimos el fichero cifrado 
-            fileWriter("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\TextoCifrado.dat", encodedMessage);
-
-            // Retornamos el texto cifrado
-            mensajeCifrado = new String(encodedMessage);
+            encodedMessage = cipher.doFinal(mensaje.getBytes());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return mensajeCifrado;
+        return encodedMessage;
     }
 
     /**
@@ -83,178 +128,70 @@ public class EncriptDecript {
      *
      * @param clave La clave del usuario
      */
-    /*
-public static String descifrar(String password) {
-KeyFactory factoriaRSA;
-PrivateKey privateKey;
-Cipher cipher;
-String desc = null;
-byte[]key = fileReader("D:\\year2\\RetoFinal-CrudApplication\\MazSolutionsServer\\PrivateKey.txt");
-try {
-PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
-factoriaRSA = KeyFactory.getInstance("RSA");
-privateKey = factoriaRSA.generatePrivate(spec);
-cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-// Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada
-cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-//IvParameterSpec ivParam = new IvParameterSpec(new byte[16]);
-// Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada y el ivParam
-byte[] cipherBytes = Base64.getDecoder().decode(password);
-cipher.init(Cipher.DECRYPT_MODE, privateKey);
-//Le decimos que descifre
-byte[] decodedMessage = cipher.doFinal(Arrays.copyOfRange(cipherBytes, 16,cipherBytes.length));
-// Texto descifrado
-desc = new String(decodedMessage);
-} catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
-Logger.getLogger(Crypto.class.getName()).log(Level.SEVERE, null, ex);
-}
-return desc;
-}*/
-    private static String descifrarTexto(RSAPrivateKey privateKey, String mensaje) {
+    private static String descifrarTexto(PrivateKey privateKey, String mensaje) {
         String mensajeDescifrado = null;
         Cipher cipher = null;
-       
-
-        // Fichero leído
-       byte[] fileContent = fileReader("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\TextoCifradoHex.dat"); 
-
+ 
         try {
             // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "RSA/ECB/PKCS1Padding"
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             
-
-            // Leemos el fichero codificado 
-            //IvParameterSpec ivParam = new IvParameterSpec(Arrays.copyOfRange(fileContent, 0, 16));
-            // Iniciamos el Cipher en ENCRYPT_MODE y le pasamos la clave privada y el ivParam
             cipher.init(DECRYPT_MODE, privateKey);
-            // Le decimos que descifre
             
-            byte[] decodedMessage = cipher.doFinal(fileContent);
+            byte[] decodedMessage = cipher.doFinal(hexStringToByteArray(mensaje));
 
-            // Texto descifrado
             mensajeDescifrado = new String(decodedMessage);
+            System.out.println("DECODED MESSAGE STRING" + decodedMessage);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return mensajeDescifrado;
     }
-
-    /**
-     * Retorna una concatenaci�n de ambos arrays
-     *
-     * @param array1
-     * @param array2
-     * @return Concatenaci�n de ambos arrays
-     */
-    /*
-    private static byte[] concatArrays(byte[] array1, byte[] array2) {
-        byte[] ret = new byte[array1.length + array2.length];
-        System.arraycopy(array1, 0, ret, 0, array1.length);
-        System.arraycopy(array2, 0, ret, array1.length, array2.length);
-        return ret;
-    }*/
-    private static PublicKey fileReaderPublic(String path, File file) throws InvalidKeySpecException {
-        byte[] ret;
-        //File file = new File("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Publica.dat");
-        X509EncodedKeySpec keySpec = null;
-        KeyFactory keyFactory = null;
-
-        try {
-            ret = Files.readAllBytes(file.toPath());
-            // Obtenemos el keySpec
-            keySpec = new X509EncodedKeySpec(ret);
-            // Obtenemos una instancia de SecretKeyFactory con el algoritmo "PBKDF2WithHmacSHA1"
-            keyFactory = KeyFactory.getInstance("RSA");
-
-        } catch (IOException ex) {
-            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return keyFactory.generatePublic(keySpec);
-    }
-
-    private static PrivateKey fileReaderPrivate(String path, File file) throws InvalidKeySpecException {
-        byte[] ret;
-        //File file = new File("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Privada.dat");
-        PKCS8EncodedKeySpec keySpec = null;
-        KeyFactory keyFactory = null;
-
-        try {
-            ret = Files.readAllBytes(file.toPath());
-            keySpec = new PKCS8EncodedKeySpec(ret);
-            keyFactory = KeyFactory.getInstance("RSA");
-        } catch (IOException ex) {
-            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return keyFactory.generatePrivate(keySpec);
-
-    }
-
-    public static String encryptDecrypt(String password) {
-        String mensajeHasheado = null;
-        try {
-
-            File publica = new File("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Publica.dat");
-            File privada = new File("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Privada.dat");
-            if (!publica.exists() || !privada.exists()) {
-                generarClaves();
-            }
-
-            RSAPublicKey publicKey = (RSAPublicKey) fileReaderPublic("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Publica.dat", publica);
-            RSAPrivateKey privateKey = (RSAPrivateKey) fileReaderPrivate("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Privada.dat", privada);
-            String mensajeCifrado = cifrarTexto(publicKey, password);
-            byte[] mensajeCifradoArray = mensajeCifrado.getBytes();
-            String mensajeCifradoHex = hexadecimal(mensajeCifradoArray);
-            byte[] mensajeCifradoHexByte = mensajeCifradoHex.getBytes();
-            fileWriter("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\TextoCifradoHex.dat", mensajeCifradoHexByte);
-            //String mensajeCifrado = ejemploRSA.cifrarTexto("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Publica.dat", "Mensaje super secreto");
-            System.out.println("Cifrado! -> " + mensajeCifradoHex);
-            System.out.println("-----------");
-            byte[] mensajeByte = hexStringToByteArray(mensajeCifradoHex);
-            String mensaje = new String(mensajeByte);
-            String mensajeDescifrado = descifrarTexto(privateKey, mensaje);
-            System.out.println("Descifrado! -> " + mensajeDescifrado);
-            System.out.println("-----------");
-            mensajeHasheado = hashearTexto(mensajeCifrado);
-
-        } catch (InvalidKeySpecException ex) {
-            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return mensajeHasheado;
-    }
-
+    
+    
     public static String hashearTexto(String texto) {
         MessageDigest messageDigest;
         String encriptacion = "SHA";
         String mensaje = null;
+        String base64 = null;
         try {
             // Obtén una instancia de MessageDigest que usa SHA
             messageDigest = MessageDigest.getInstance(encriptacion);
             // Convierte el texto en un array de bytes
-            byte[] textArray = texto.getBytes();
+            byte[] textArray = texto.getBytes("UTF-8");
             // Actualiza el MessageDigest con el array de bytes             
             messageDigest.update(textArray);
             // Calcula el resumen (función digest)
             byte[] digest = messageDigest.digest();
-
-            System.out.println("Mensaje original: " + texto);
-            System.out.println("Número de Bytes: " + messageDigest.getDigestLength());
-            System.out.println("Algoritmo usado: " + messageDigest.getAlgorithm());
-            System.out.println("Resumen del Mensaje: " + digest);
-            mensaje = hexadecimal(digest);
-            System.out.println("Mensaje en Hexadecimal: " + mensaje);
-            System.out.println("Proveedor: " + messageDigest.getProvider());
-
+            base64 = Base64.getEncoder().encodeToString(digest);
+            mensaje = hexadecimal(base64.getBytes());
+           
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
         }
         return mensaje;
     }
+
+   
+    private static byte[] fileReader(String path) {
+        byte[] ret = null;
+
+        File file = new File(path);
+
+        try {
+            ret = Files.readAllBytes(file.toPath());
+
+        } catch (IOException ex) {
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return ret;
+    }
+
+
 
     // Convierte Array de Bytes en hexadecimal
     static String hexadecimal(byte[] resumen) {
@@ -286,9 +223,9 @@ return desc;
             KeyPair keyPair = keyPairGenerator.genKeyPair();
 
             byte[] privateKey = keyPair.getPrivate().getEncoded();
-            fileWriter("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Privada.dat", privateKey);
+            fileWriter("Privada.dat", privateKey);
             byte[] publicKey = keyPair.getPublic().getEncoded();
-            fileWriter("C:\\Users\\2dam.HZ375754\\Desktop\\encriptacion\\Publica.dat", publicKey);
+            fileWriter("Publica.dat", publicKey);
 
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
@@ -310,21 +247,5 @@ return desc;
         }
     }
 
-    /**
-     * Retorna el contenido de un fichero
-     *
-     * @param path Path del fichero
-     * @return El texto del fichero
-     */
-    public static byte[] fileReader(String path) {
-        byte ret[] = null;
-        File file = new File(path);
-        try {
-            ret = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
 
 }
