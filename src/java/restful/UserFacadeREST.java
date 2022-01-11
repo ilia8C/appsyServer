@@ -120,7 +120,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
                     .getSingleResult();
             List<LastSignIn> lastSignIns = new ArrayList<>();
             lastSignIns = (ArrayList) em.createNamedQuery("lastSignInsByLogin").setParameter("login", login).getResultList();
-            if (lastSignIns.size() < 2) {
+            if (lastSignIns.size() < 10) {
                 LastSignIn lastSignIn = new LastSignIn();
                 lastSignIn.setId(null);
                 lastSignIn.setLastSignIn(new Date());
