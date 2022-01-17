@@ -5,13 +5,19 @@
  */
 package restful;
 
+
+import crypt.SendEmail;
+import entities.LastSignIn;
 import entities.User;
+import java.util.ArrayList;
+import java.util.Date;
+import crypt.EncriptDecript;
+import entities.User;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -28,8 +34,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
+ * This class is automatically generated thanks to the User entity, it contains
+ * the basic management methods of the entity as well as customized ones.
  *
- * @author 2dam
+ * @author Alain Lozano
  */
 @Stateless
 @Path("entities.user")
@@ -42,13 +50,15 @@ public class UserFacadeREST extends AbstractFacade<User> {
         super(User.class);
     }
 
+    //This method is used to create new users.
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(User entity) {
-           super.create(entity);
+        super.create(entity);
     }
 
+    //This method is used to edit existing users by the id.
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
@@ -56,12 +66,14 @@ public class UserFacadeREST extends AbstractFacade<User> {
         super.edit(entity);
     }
 
+    //This method is used to delete users by the id.
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
         super.remove(super.find(id));
     }
 
+    //This method is used to search for a users by the id.
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
@@ -69,13 +81,16 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return super.find(id);
     }
 
+    //This method is used to get all the users.
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
     public List<User> findAll() {
+        
         return super.findAll();
     }
 
+    //This method is used to get a certaint amount of users.
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML})
@@ -83,6 +98,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return super.findRange(new int[]{from, to});
     }
 
+    //This method is used to count how many users are in the database.
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
@@ -94,6 +110,8 @@ public class UserFacadeREST extends AbstractFacade<User> {
     protected EntityManager getEntityManager() {
         return em;
     }
+    //This method is used so that a user can log in with his login and password
+    //and in case it is not found, an error is sent to him.
 
     @GET
     @Path("login/{login}/{password}")
@@ -101,10 +119,27 @@ public class UserFacadeREST extends AbstractFacade<User> {
     public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception {
         User user = null;
         try {
+            String passwordEncrypt = EncriptDecript.encrypt(password);
+            System.out.println(passwordEncrypt);
+            String passwordHasheada = EncriptDecript.decrypt(passwordEncrypt);
+            System.out.println(passwordEncrypt);
             user = (User) em.createNamedQuery("findUserByLoginAndPassword")
                     .setParameter("login", login)
-                    .setParameter("password", password)
+                    .setParameter("password", passwordHasheada)
                     .getSingleResult();
+            List<LastSignIn> lastSignIns = new ArrayList<>();
+            lastSignIns = (ArrayList) em.createNamedQuery("lastSignInsByLogin").setParameter("login", login).getResultList();
+            if (lastSignIns.size() < 10) {
+                LastSignIn lastSignIn = new LastSignIn();
+                lastSignIn.setId(null);
+                lastSignIn.setLastSignIn(new Date());
+                lastSignIn.setUser(user);
+                em.persist(lastSignIn);
+            } else {
+                LastSignIn lis = lastSignIns.get(0);
+                lis.setLastSignIn(new Date());
+                em.merge(lis);
+            }
         } catch (NoResultException e) {
             throw new NotAuthorizedException(e);
         } catch (Exception e) {
@@ -113,6 +148,8 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return user;
     }
 
+    //This method is used to search for a user through their login,
+    //and if not found an error is sent to the user.
     @GET
     @Path("login/{login}")
     @Produces({MediaType.APPLICATION_XML})
@@ -130,18 +167,24 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return user;
     }
 
+    //This method is used to reset the password of a user by receiving his email,
+    //a new password is generated by calling the generatePassword method and 
+    //the SendEmail class is called to send an email to the user with the password change,  
+    //if the user is not found an error message is sent.
     @GET
     @Path("resetPassword/{email}")
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByEmail(@PathParam("email") String email) throws Exception {
         User user = null;
-        String password = generatePassword(8);
+        String password = "abcd*1234";
         try {
+            String passwordHasheada = EncriptDecript.hashearTexto(password);
             user = (User) em.createNamedQuery("resetPasswordByEmail")
                     .setParameter("email", email)
                     .getSingleResult();
-            user.setPassword(password);
+            user.setPassword(passwordHasheada);
             em.merge(user);
+            SendEmail.sendEmail(email, user.getPassword(), user.getLogin());
         } catch (NoResultException e) {
             throw new NotFoundException(e);
         } catch (Exception e) {
@@ -149,6 +192,8 @@ public class UserFacadeREST extends AbstractFacade<User> {
         }
     }
 
+    //This method is used to change the password of a user through his login 
+    //and receiving the new password, if the user is not found an error message is sent.
     @GET
     @Path("changePassword/{login}/{password}")
     @Produces({MediaType.APPLICATION_XML})
@@ -167,23 +212,25 @@ public class UserFacadeREST extends AbstractFacade<User> {
         }
     }
 
+    /**
+     * This method is used to generate random passwords by receiving the length of the password to be generated.
+     * @param length The length of the password to be generated
+     * @return the generated password
+     */
     private String generatePassword(int length) {
-        String NUMEROS = "0123456789";
+        String NUMBERS = "0123456789";
 
-        String MAYUSCULAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        String MINUSCULAS = "abcdefghijklmnopqrstuvwxyz";
-
-        String key = NUMEROS+MAYUSCULAS+MINUSCULAS;
+        String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
 
         String pswd = "";
+        String key = NUMBERS + UPPERCASE + LOWERCASE;
 
         for (int i = 0; i < length; i++) {
             pswd += (key.charAt((int) (Math.random() * key.length())));
         }
-
         return pswd;
-
     }
 
 }
