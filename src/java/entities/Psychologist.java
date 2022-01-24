@@ -16,6 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity for the psychologist, it extends from the entity User which gives the
@@ -83,7 +84,7 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the resources
      */
-
+  @XmlTransient
     public Set<Resource> getResources() {
         return resources;
     }
