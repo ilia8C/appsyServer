@@ -8,6 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -46,13 +47,13 @@ public class Resource implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Psychologist psychologist;
     private String link;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAdded;
     private String tittle;
-    @OneToMany(mappedBy = "resource", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "resource", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<ClientResource> clientResource;
 
     /**

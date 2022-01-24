@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,8 +24,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * User attributes: idUser, password, enumPrivilege, enumStatus, fullName, email
  * and login.
  *
- * @author Ilia Consuegra
+ * @author Alain Lozano Isasi
  */
+@NamedQueries({
+    //This is the query to find a user by their login.
+    @NamedQuery(
+            name = "findClientByFullName", query = "SELECT u FROM User u  WHERE u.fullName=:fullName"
+    ),
+    //This is the query to reset a password from a user by the email.
+    @NamedQuery(
+            name = "resetPasswordByEmail", query = "SELECT u FROM User u  WHERE u.email=:email"
+    ),
+    //This is the query to change the password from a user by the login.
+    @NamedQuery(
+            name = "changePasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
+    ),
+})
 @Entity
 @Table(name = "client", schema = "appsydb")
 @XmlRootElement

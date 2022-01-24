@@ -33,21 +33,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Alain Lozano Isasi
  */
 @NamedQueries({
-    //This is tne query to for a user to log in with login and password.
+    //This is the query to for a user to log in with login and password.
     @NamedQuery(
             name = "findUserByLoginAndPassword", query = "SELECT u FROM User u WHERE u.login=:login and u.password=:password"
     ),
     //This is the query to find a user by their login.
     @NamedQuery(
             name = "findUserByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
-    ),
-    //This is the query to reset a password from a user by the email.
-    @NamedQuery(
-            name = "resetPasswordByEmail", query = "SELECT u FROM User u  WHERE u.email=:email"
-    ),
-    //This is the query to change the password from a user by the login.
-    @NamedQuery(
-            name = "changePasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
     ),
     //This is the query to search for the last singIns of one user by the login
     @NamedQuery(
@@ -88,7 +80,6 @@ public class User implements Serializable {
     /**
      * @return the password
      */
-    @XmlTransient
     public String getPassword() {
         return password;
     }
@@ -173,7 +164,7 @@ public class User implements Serializable {
     /**
      * @return the lastSignins
      */
-
+    @XmlTransient
     public Set<LastSignIn> getLastSignins() {
         return lastSignIns;
     }
