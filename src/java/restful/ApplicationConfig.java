@@ -29,8 +29,12 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(restful.AppointmentFacadeREST.class);
+        resources.add(restful.ClientFacadeREST.class);
+        resources.add(restful.ClientResourceFacadeREST.class);
         resources.add(restful.LastSignInFacadeREST.class);
         resources.add(restful.PsychologistFacadeREST.class);
+        resources.add(restful.ResourceFacadeREST.class);
         resources.add(restful.UserFacadeREST.class);
     }
     

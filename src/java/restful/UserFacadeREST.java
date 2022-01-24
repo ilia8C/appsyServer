@@ -5,7 +5,6 @@
  */
 package restful;
 
-
 import crypt.SendEmail;
 import entities.LastSignIn;
 import entities.User;
@@ -86,7 +85,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     @Produces({MediaType.APPLICATION_XML})
     public List<User> findAll() {
-        
+
         return super.findAll();
     }
 
@@ -176,7 +175,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByEmail(@PathParam("email") String email) throws Exception {
         User user = null;
-        String password = "abcd*1234";
+        String password = generatePassword(8);
         try {
             String passwordHasheada = EncriptDecript.hashearTexto(password);
             user = (User) em.createNamedQuery("resetPasswordByEmail")
@@ -184,34 +183,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
                     .getSingleResult();
             user.setPassword(passwordHasheada);
             em.merge(user);
-            SendEmail.sendEmail(email, user.getPassword(), user.getLogin());
+            SendEmail.sendEmail(email, password, user.getLogin());
         } catch (NoResultException e) {
             throw new NotFoundException(e);
         } catch (Exception e) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
         }
     }
-
-    //This method is used to change the password of a user through his login 
-    //and receiving the new password, if the user is not found an error message is sent.
-    @GET
-    @Path("changePassword/{login}/{password}")
-    @Produces({MediaType.APPLICATION_XML})
-    public void changePasswordByLogin(@PathParam("login") String login, @PathParam("password") String password) throws Exception {
-        User user = null;
-        try {
-            user = (User) em.createNamedQuery("resetPasswordByLogin")
-                    .setParameter("login", login)
-                    .getSingleResult();
-            user.setPassword(password);
-            em.merge(user);
-        } catch (NoResultException e) {
-            throw new NotFoundException(e);
-        } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
-        }
-    }
-
     /**
      * This method is used to generate random passwords by receiving the length of the password to be generated.
      * @param length The length of the password to be generated

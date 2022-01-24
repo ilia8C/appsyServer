@@ -8,8 +8,11 @@ package entities;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -21,6 +24,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Ilia Consuegra
  */
+@NamedQueries({
+    //This is the query to for a user to log in with login and password.
+    @NamedQuery(
+            name = "findPsychologistByFullName", query = "SELECT p FROM Psychologist p WHERE p.fullName=:fullName"
+    ),
+    //This is the query to find a user by their login.
+    @NamedQuery(
+            name = "findPsychologistByMail", query = "SELECT p FROM Psychologist p  WHERE p.email=:email"
+    ),
+})
 @Entity
 @Table(name = "psychologist", schema = "appsydb")
 @XmlRootElement
@@ -34,9 +47,9 @@ public class Psychologist extends User implements Serializable {
      */
 
     private String office;
-    @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Resource> resources;
-    @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="psychologist", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Appointment> appointments;
 
     /**

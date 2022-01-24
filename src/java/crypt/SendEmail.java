@@ -27,13 +27,13 @@ public class SendEmail {
     //This is the attribute to define where we are going to send the mail
     static String to = null;
     //This is the attribute to define the user from where is the email going to send
-    static final String SMTP_USERNAME = "appsy.noreply@gmail.com";
+    static final String SMTP_USERNAME = new EncriptDecript().decryptEmailUser();
     //This is the attribute to define the password for the user that is going to send the email
-    static final String SMTP_PASSWORD = "abcd*1234";
+    final  static String SMTP_PASSWORD = new EncriptDecript().decryptEmailPassword();
     //This is the attributte to define the host to send the email
     static final String HOST = "smtp.gmail.com";
     //This is the attribute to define the port to send the email
-    static final int PORT = 25;
+    static final int PORT = 587;
     //This is the attributo to define the subject of the email send
     static final String SUBJECT = "Password reset notification";
     /**
@@ -63,6 +63,7 @@ public class SendEmail {
         Transport transport = session.getTransport("smtp");
         try {
             System.out.println("Sending...");
+            System.out.println(SMTP_USERNAME + SMTP_PASSWORD);
             transport.connect(HOST, SMTP_USERNAME, SMTP_PASSWORD);
             transport.sendMessage(msg, msg.getAllRecipients());
             System.out.println("Email sent!");
