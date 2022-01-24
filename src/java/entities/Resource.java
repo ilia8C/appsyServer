@@ -82,7 +82,7 @@ public class Resource implements Serializable {
      *
      * @return the object Psychologist.
      */
-    @XmlTransient
+  
     public Psychologist getPsychologist() {
         return psychologist;
     }
