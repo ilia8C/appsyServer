@@ -7,6 +7,8 @@ package restful;
 
 import entities.Appointment;
 import entities.AppointmentId;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -115,10 +117,10 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
     @GET
     @Path("psychologistId/{psychologistId}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<Appointment> findAppointmentsByPsychologist (@PathParam("psychologistId") Integer psychologistId){
+    public Set<Appointment> findAppointmentsOfPsychologist (@PathParam("psychologistId") Integer psychologistId){
         Set<Appointment> appointments = null;
         try{
-            appointments = new HashSet<>(em.createNamedQuery("findAppointmentsByPsychologist")
+            appointments = new HashSet<>(em.createNamedQuery("findAppointmentsOfPsychologist")
                 .setParameter("psychologistId", psychologistId)
                 .getResultList());
         
@@ -130,13 +132,50 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
     }
     
     @GET
-    @Path("clientId/{clientId}")
+    @Path("psychologistId/{psychologistId}/clientId/{clientId}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<Appointment> findAppointmentsByClient (@PathParam("clientId") Integer clientId){
+    public Set<Appointment> findAppointmentsOfClientByPsychologist (@PathParam("psychologistId") Integer psychologistId, @PathParam("clientId") Integer clientId){
         Set<Appointment> appointments = null;
         try{
-            appointments = new HashSet<>(em.createNamedQuery("findAppointmentsByClient")
+            appointments = new HashSet<>(em.createNamedQuery("findAppointmentsOfClientByPsychologist")
+                .setParameter("psychologistId", psychologistId)
                 .setParameter("clientId", clientId)
+                .getResultList());
+        
+        }catch(Exception e){
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        }
+        return appointments;
+    }
+    
+    @GET
+    @Path("clientId/{clientId}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Appointment> findAppointmentsOfClient (@PathParam("clientId") Integer clientId){
+        Set<Appointment> appointments = null;
+        try{
+            appointments = new HashSet<>(em.createNamedQuery("findAppointmentsOfClient")
+                .setParameter("clientId", clientId)
+                .getResultList());
+        
+        }catch(Exception e){
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        }
+        return appointments;
+        
+    }
+    
+    @GET
+    @Path("date/{date}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<Appointment> findAppointmentsByDate (@PathParam("date") String date){
+        Set<Appointment> appointments = null;
+        try{
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date dateParsed = simpleDateFormat.parse(date);
+            date = simpleDateFormat.format(dateParsed);
+            appointments = new HashSet<>(em.createNamedQuery("findAppointmentsByDate")
+                .setParameter("date", dateParsed)
                 .getResultList());
         
         }catch(Exception e){
