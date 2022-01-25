@@ -11,6 +11,8 @@ import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -29,24 +31,23 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
             name = "findAppointmentsOfPsychologist",
-            query = "SELECT a FROM Appointment a, Psychologist p WHERE p.id=:psychologistId "
-                    + "and a.psychologist.id=p.id"
+            query = "SELECT a FROM Appointment a WHERE a.appointmentId.psychologistId=:psychologistId"
     ),
     @NamedQuery(
             name = "findAppointmentsOfClient",
-            query = "SELECT a FROM Appointment a, Client c WHERE c.id=:clientId "
-                    + "and a.client.id=c.id"
+            query = "SELECT a FROM Appointment a WHERE a.appointmentId.clientId=:clientId"
     ),
     @NamedQuery(
             name = "findAppointmentsOfClientByPsychologist",
-            query = "SELECT a FROM Appointment a, Client c, Psychologist p WHERE c.id=:clientId "
-                    + "and p.id=:psychologistId "
-                    + "and a.psychologist.id=p.id "
-                    + "and a.client.id=c.id"
+            query = "SELECT a FROM Appointment a WHERE a.appointmentId.clientId=:clientId AND a.appointmentId.psychologistId=:psychologistId"                  
     ),
     @NamedQuery(
             name = "findAppointmentsByDate",
             query = "SELECT a FROM Appointment a WHERE a.date=:date"
+    ),
+    @NamedQuery(
+            name = "deleteAppointment",
+            query = "DELETE FROM Appointment a WHERE a.appointmentId.clientId=:clientId and a.appointmentId.psychologistId=:psychologistId "
     )
 })
 @Entity
@@ -148,7 +149,6 @@ public class Appointment implements Serializable {
     /**
      * @return the psychologist
      */
-    @XmlTransient
     public Psychologist getPsychologist() {
         return psychologist;
     }

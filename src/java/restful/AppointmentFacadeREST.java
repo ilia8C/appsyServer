@@ -84,6 +84,15 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
         entities.AppointmentId key = getPrimaryKey(id);
         super.remove(super.find(key));
     }
+    
+    @DELETE
+    @Path("delete/{psychologistId}/{clientId}")
+    public void remove(@PathParam("psychologistId") Integer psychologistId, @PathParam("clientId") Integer clientId) {
+        em.createNamedQuery("deleteAppointment")
+                .setParameter("psychologistId", psychologistId)
+                .setParameter("clientId", clientId)
+                .executeUpdate();
+    }
 
     @GET
     @Path("{id}")
