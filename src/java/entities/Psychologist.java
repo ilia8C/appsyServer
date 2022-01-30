@@ -83,7 +83,6 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the resources
      */
-
     public Set<Resource> getResources() {
         return resources;
     }

@@ -45,6 +45,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
             name = "lastSignInsByLogin", query = "SELECT l FROM LastSignIn l WHERE l.user.login =(SELECT u.login FROM User u WHERE u.login=:login) ORDER BY l.lastSignIn ASC"
     ),
+    //This is the query to change the password from a user by the login.
+    @NamedQuery(
+            name = "changePasswordByLogin", query = "SELECT u FROM User u  WHERE u.login=:login"
+    ),
 })
 @Entity
 @Table(name = "user", schema = "appsydb")
@@ -62,12 +66,14 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private EnumStatus enumStatus;
     private String fullName;
+    @Column(name = "email", unique = true)
     private String email;
     @Column(name = "login", unique = true)
     private String login;
     @OneToMany(mappedBy="user",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
-
     private Set<LastSignIn> lastSignIns;
+
+    
 
     public Integer getId() {
         return id;
@@ -164,7 +170,6 @@ public class User implements Serializable {
     /**
      * @return the lastSignins
      */
-    @XmlTransient
     public Set<LastSignIn> getLastSignins() {
         return lastSignIns;
     }
@@ -196,34 +201,34 @@ public class User implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
+        /* if (getClass() != obj.getClass()) {
+        return false;
         }
         final User other = (User) obj;
         if (!Objects.equals(this.password, other.password)) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.fullName, other.fullName)) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.email, other.email)) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.login, other.login)) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.id, other.id)) {
-            return false;
+        return false;
         }
         if (this.enumPrivilege != other.enumPrivilege) {
-            return false;
+        return false;
         }
         if (this.enumStatus != other.enumStatus) {
-            return false;
+        return false;
         }
         if (!Objects.equals(this.lastSignIns, other.lastSignIns)) {
-            return false;
-        }
+        return false;
+        }*/
         return true;
     }
     /**

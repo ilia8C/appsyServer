@@ -89,7 +89,7 @@ public class EncriptDecript {
             KeyFactory factoria = KeyFactory.getInstance("RSA");
             PrivateKey privada = factoria.generatePrivate(keySpec);
 
-            String mensajeDescifrado = descifrarTexto(privada, mensajeCifradoHex);
+            byte[] mensajeDescifrado = descifrarTexto(privada, mensajeCifradoHex);
             mensajeHasheado = hashearTexto(mensajeDescifrado);
 
             System.out.println(mensajeHasheado);
@@ -117,7 +117,7 @@ public class EncriptDecript {
             encodedMessage = cipher.doFinal(mensaje.getBytes());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, e);
         }
         return encodedMessage;
     }
@@ -128,9 +128,10 @@ public class EncriptDecript {
      *
      * @param clave La clave del usuario
      */
-    private static String descifrarTexto(PrivateKey privateKey, String mensaje) {
+    private static byte[] descifrarTexto(PrivateKey privateKey, String mensaje) {
         String mensajeDescifrado = null;
         Cipher cipher = null;
+        byte[] decodedMessage=null;
 
         try {
             // Obtenemos una instancide de Cipher con el algoritmos que vamos a usar "RSA/ECB/PKCS1Padding"
@@ -138,18 +139,17 @@ public class EncriptDecript {
 
             cipher.init(DECRYPT_MODE, privateKey);
 
-            byte[] decodedMessage = cipher.doFinal(hexStringToByteArray(mensaje));
-
-            mensajeDescifrado = new String(decodedMessage);
+            decodedMessage = cipher.doFinal(hexStringToByteArray(mensaje));
+            
             System.out.println("DECODED MESSAGE STRING" + decodedMessage);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, e);
         }
-        return mensajeDescifrado;
+        return decodedMessage;
     }
 
-    public static String hashearTexto(String texto) {
+    public static String hashearTexto(byte[] texto) {
         MessageDigest messageDigest;
         String encriptacion = "SHA";
         String mensaje = null;
@@ -157,19 +157,15 @@ public class EncriptDecript {
         try {
             // Obtén una instancia de MessageDigest que usa SHA
             messageDigest = MessageDigest.getInstance(encriptacion);
-            // Convierte el texto en un array de bytes
-            byte[] textArray = texto.getBytes("UTF-8");
             // Actualiza el MessageDigest con el array de bytes             
-            messageDigest.update(textArray);
+            messageDigest.update(texto);
             // Calcula el resumen (función digest)
             byte[] digest = messageDigest.digest();
             base64 = Base64.getEncoder().encodeToString(digest);
             mensaje = hexadecimal(base64.getBytes());
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, e);
         }
         return mensaje;
     }
@@ -214,7 +210,7 @@ public class EncriptDecript {
             decodedKey = new String(decodedMessage);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, e);
         }
         return decodedKey;
 
@@ -259,7 +255,7 @@ public class EncriptDecript {
             decodedKey = new String(decodedMessage);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, e);
         }
         return decodedKey;
 
@@ -293,15 +289,16 @@ public class EncriptDecript {
         return HEX.toUpperCase();
     }
 
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
+    public static byte[] hexStringToByteArray(String password) {
+        int len = password.length();
         byte[] mensajeByte = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
-            mensajeByte[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
+            mensajeByte[i / 2] = (byte) ((Character.digit(password.charAt(i), 16) << 4)
+                    + Character.digit(password.charAt(i + 1), 16));
         }
         return mensajeByte;
     }
+
 
     public static void generarClaves() {
         try {
@@ -330,7 +327,7 @@ public class EncriptDecript {
         try (FileOutputStream fos = new FileOutputStream(path)) {
             fos.write(text);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(EncriptDecript.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 

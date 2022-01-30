@@ -29,25 +29,28 @@ public class SendEmail {
     //This is the attribute to define the user from where is the email going to send
     static final String SMTP_USERNAME = new EncriptDecript().decryptEmailUser();
     //This is the attribute to define the password for the user that is going to send the email
-    final  static String SMTP_PASSWORD = new EncriptDecript().decryptEmailPassword();
+    final static String SMTP_PASSWORD = new EncriptDecript().decryptEmailPassword();
     //This is the attributte to define the host to send the email
     static final String HOST = "smtp.gmail.com";
     //This is the attribute to define the port to send the email
     static final int PORT = 587;
     //This is the attributo to define the subject of the email send
     static final String SUBJECT = "Password reset notification";
+
     /**
-     * This is the method to send the email 
+     * This is the method to send the email
+     *
      * @param emailTo the email address where we are going to send the mail to
      * @param password the new password of the user
-     * @param login the user login 
-     * @throws Exception 
+     * @param login the user login
+     * @throws Exception
      */
-    public static void sendEmail(String emailTo, String password, String login) throws Exception {
-        String BODY = "We confirm that your password has been successfully reset."
+    public static void sendEmail(String emailTo, String password, String login, Integer emailType) throws Exception {
+        String BODYRESET = "We confirm that your password has been successfully reset."
                 + "<p>These are your new login credentials:"
                 + "<p>&emsp; username: " + login
                 + "<p>&emsp; password: " + password;
+        String BODYCHANGE = "We confirm that your password has been successfully changed.";
         to = emailTo;
         Properties props = System.getProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -59,7 +62,14 @@ public class SendEmail {
         msg.setFrom(new InternetAddress(FROM, FROMNAME));
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
         msg.setSubject(SUBJECT);
-        msg.setContent(BODY, "text/html");
+        switch (emailType) {
+            case 1:
+                msg.setContent(BODYRESET, "text/html");
+                break;
+            case 2:
+                msg.setContent(BODYCHANGE, "text/html");
+                break;
+        }
         Transport transport = session.getTransport("smtp");
         try {
             System.out.println("Sending...");
@@ -74,4 +84,5 @@ public class SendEmail {
             transport.close();
         }
     }
+
 }

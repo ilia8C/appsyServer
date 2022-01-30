@@ -5,6 +5,7 @@
  */
 package restful;
 
+import crypt.EncriptDecript;
 import entities.Psychologist;
 import entities.User;
 import java.util.List;
@@ -14,9 +15,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -44,27 +47,52 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Psychologist entity) {
-        super.create(entity);
+        try {
+            String passwordHash = EncriptDecript.hashearTexto(entity.getPassword().getBytes());
+            entity.setPassword(passwordHash);
+            super.create(entity);
+        } catch (ClientErrorException ex) {
+            throw new ClientErrorException(409);
+        } catch (Exception ex){
+            throw new ClientErrorException(500);
+        }
+
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, Psychologist entity) {
-        super.edit(entity);
+        try {
+            super.edit(entity);
+        } catch (Exception ex) {
+            throw new NotFoundException();
+        }
+
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+        try {
+            super.remove(super.find(id));
+        } catch (ClientErrorException ex) {
+            throw new NotFoundException();
+        }
+
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public Psychologist find(@PathParam("id") Integer id) {
-        return super.find(id);
+        Psychologist psychologist = null;
+        try {
+            psychologist = super.find(id);
+        } catch (ClientErrorException ex) {
+            throw new ClientErrorException(404);
+        }
+        return psychologist;
     }
 
     @GET
@@ -92,8 +120,7 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
-    
+
     @GET
     @Path("email/{email}")
     @Produces({MediaType.APPLICATION_XML})
@@ -103,15 +130,12 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
             psychologist = (Psychologist) em.createNamedQuery("findPsychologistByMail")
                     .setParameter("email", email)
                     .getSingleResult();
-        } catch (NoResultException e) {
+        } catch (NotFoundException e) {
             throw new NotFoundException(e);
-        } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
         }
         return psychologist;
     }
-    
-    
+
     @GET
     @Path("fullName/{fullName}")
     @Produces({MediaType.APPLICATION_XML})
@@ -121,12 +145,10 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
             psychologist = (Psychologist) em.createNamedQuery("findPsychologistByFullName")
                     .setParameter("fullName", fullName)
                     .getSingleResult();
-        } catch (NoResultException e) {
-            throw new NotFoundException(e);
         } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+            throw new NotFoundException();
         }
         return psychologist;
     }
-    
+
 }
