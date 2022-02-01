@@ -9,7 +9,6 @@ import crypt.EncriptDecript;
 import crypt.SendEmail;
 import entities.Client;
 import entities.User;
-import exceptions.PasswordDontMatch;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +38,7 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
 
     @PersistenceContext(unitName = "AppsyServerPU")
     private EntityManager em;
+    private final Logger LOGGER=Logger.getLogger(this.getClass().getName());
 
     public ClientFacadeREST() {
         super(Client.class);
@@ -60,11 +60,12 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Client entity) {
-        try {
+    public void edit(@PathParam("id") Integer id, Client entity) throws ClientErrorException{
+        try{
+            LOGGER.log(Level.INFO, "Entering editing:{0}", entity.toString());
             super.edit(entity);
-        } catch (Exception ex) {
-            throw new NotFoundException();
+        }catch(Exception e){
+             LOGGER.log(Level.SEVERE, "Exception editing:{0}", e.getLocalizedMessage());
         }
     }
 

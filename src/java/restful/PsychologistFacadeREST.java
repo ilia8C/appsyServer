@@ -8,10 +8,12 @@ package restful;
 import crypt.EncriptDecript;
 import entities.Psychologist;
 import entities.User;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -46,15 +48,13 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML})
-    public void create(Psychologist entity) {
+    public void create(Psychologist entity) throws ClientErrorException{
         try {
             String passwordHash = EncriptDecript.hashearTexto(entity.getPassword().getBytes());
             entity.setPassword(passwordHash);
             super.create(entity);
-        } catch (ClientErrorException ex) {
+        } catch (Exception ex) {
             throw new ClientErrorException(409);
-        } catch (Exception ex){
-            throw new ClientErrorException(500);
         }
 
     }
@@ -62,18 +62,18 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Psychologist entity) {
+    public void edit(@PathParam("id") Integer id, Psychologist entity) throws  ClientErrorException{
         try {
             super.edit(entity);
         } catch (Exception ex) {
-            throw new NotFoundException();
+            throw new ClientErrorException(409);
         }
 
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
+    public void remove(@PathParam("id") Integer id) throws NotFoundException{
         try {
             super.remove(super.find(id));
         } catch (ClientErrorException ex) {
@@ -85,12 +85,12 @@ public class PsychologistFacadeREST extends AbstractFacade<Psychologist> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Psychologist find(@PathParam("id") Integer id) {
+    public Psychologist find(@PathParam("id") Integer id) throws NotFoundException{
         Psychologist psychologist = null;
         try {
             psychologist = super.find(id);
-        } catch (ClientErrorException ex) {
-            throw new ClientErrorException(404);
+        } catch (NoResultException ex) {
+            throw new NotFoundException(ex);
         }
         return psychologist;
     }

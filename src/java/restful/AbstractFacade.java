@@ -7,6 +7,8 @@ package restful;
 
 import entities.Resource;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -28,7 +30,7 @@ public abstract class AbstractFacade<T> {
     }
 
     public void edit(T entity) {
-        getEntityManager().merge(entity);
+            getEntityManager().merge(entity);
     }
 
     public void remove(T entity) {

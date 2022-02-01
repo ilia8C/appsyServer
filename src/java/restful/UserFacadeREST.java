@@ -13,7 +13,6 @@ import java.util.Date;
 import crypt.EncriptDecript;
 import entities.Client;
 import entities.User;
-import exceptions.PasswordDontMatch;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Level;
@@ -57,7 +56,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML})
-    public void create(User entity) {
+    public void create(User entity) throws ClientErrorException{
         try {
             String passwordHash = EncriptDecript.hashearTexto(entity.getPassword().getBytes());
             entity.setPassword(passwordHash);
@@ -72,7 +71,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, User entity) {
+    public void edit(@PathParam("id") Integer id, User entity) throws NotFoundException{
         try {
             super.edit(entity);
         } catch (Exception ex) {
@@ -83,7 +82,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     //This method is used to delete users by the id.
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
+    public void remove(@PathParam("id") Integer id) throws NotFoundException{
         try {
             super.remove(super.find(id));
         } catch (Exception ex) {
@@ -96,7 +95,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public User find(@PathParam("id") Integer id) {
+    public User find(@PathParam("id") Integer id) throws NotFoundException{
         try {
             return super.find(id);
         } catch (Exception ex) {
@@ -207,7 +206,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @GET
     @Path("changePassword/{login}/{password}")
     @Produces({MediaType.APPLICATION_XML})
-    public void changePasswordByLogin(@PathParam("login") String login, @PathParam("password") String password) throws PasswordDontMatch {
+    public void changePasswordByLogin(@PathParam("login") String login, @PathParam("password") String password) throws  NotFoundException, ServerErrorException{
         User user;
         try {
             String passwordDecript = EncriptDecript.decrypt(password);
