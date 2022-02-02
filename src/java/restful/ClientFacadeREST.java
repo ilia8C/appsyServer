@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -37,6 +38,7 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
 
     @PersistenceContext(unitName = "AppsyServerPU")
     private EntityManager em;
+    private final Logger LOGGER=Logger.getLogger(this.getClass().getName());
 
     public ClientFacadeREST() {
         super(Client.class);
@@ -46,27 +48,49 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Client entity) {
-        super.create(entity);
+        try {
+            String passwordHash = EncriptDecript.hashearTexto(entity.getPassword().getBytes());
+            entity.setPassword(passwordHash);
+            super.create(entity);
+        } catch (Exception ex) {
+            throw new ClientErrorException(409);
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Client entity) {
-        super.edit(entity);
+    public void edit(@PathParam("id") Integer id, Client entity) throws ClientErrorException{
+        try{
+            LOGGER.log(Level.INFO, "Entering editing:{0}", entity.toString());
+            super.edit(entity);
+        }catch(Exception e){
+             LOGGER.log(Level.SEVERE, "Exception editing:{0}", e.getLocalizedMessage());
+        }
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+        try {
+            super.remove(super.find(id));
+        } catch (Exception ex) {
+            throw new NotFoundException();
+
+        }
+
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public Client find(@PathParam("id") Integer id) {
-        return super.find(id);
+        try {
+            return super.find(id);
+        } catch (Exception ex) {
+            throw new NotFoundException();
+        }
+
     }
 
     @GET
@@ -94,46 +118,22 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     protected EntityManager getEntityManager() {
         return em;
     }
+
     //This method is used to search for a client through their full name,
     //and if not found an error is sent to the user.
     @GET
     @Path("fullName/{fullName}")
     @Produces({MediaType.APPLICATION_XML})
-    public User findUserByLogin(@PathParam("fullName") String fullName) throws Exception {
+    public User findClientByFullName(@PathParam("fullName") String fullName) throws Exception {
         User user = null;
         try {
             user = (User) em.createNamedQuery("findClientByFullName")
                     .setParameter("fullname", fullName)
                     .getSingleResult();
-        } catch (NoResultException e) {
-            throw new NotFoundException(e);
         } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+            throw new NotFoundException(e);
         }
         return user;
     }
 
-    //This method is used to change the password of a user through his login 
-    //and receiving the new password, if the user is not found an error message is sent.
-    @GET
-    @Path("changePassword/{login}/{password}")
-    @Produces({MediaType.APPLICATION_XML})
-    public void changePasswordByLogin(@PathParam("login") String login, @PathParam("password") String password) throws Exception {
-        User user = null;
-        try {
-            user = (User) em.createNamedQuery("changePasswordByLogin")
-                    .setParameter("login", login)
-                    .getSingleResult();
-            user.setPassword(password);
-            em.merge(user);
-            SendEmail.sendEmail(user.getPassword(), password, login);
-        } catch (NoResultException e) {
-            throw new NotFoundException(e);
-        } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
-        }
-    }
-
-    
-    
 }
