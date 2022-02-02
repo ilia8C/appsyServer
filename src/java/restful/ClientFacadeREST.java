@@ -16,7 +16,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,7 +37,6 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
 
     @PersistenceContext(unitName = "AppsyServerPU")
     private EntityManager em;
-    private final Logger LOGGER=Logger.getLogger(this.getClass().getName());
 
     public ClientFacadeREST() {
         super(Client.class);
@@ -48,49 +46,27 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Client entity) {
-        try {
-            String passwordHash = EncriptDecript.hashearTexto(entity.getPassword().getBytes());
-            entity.setPassword(passwordHash);
-            super.create(entity);
-        } catch (Exception ex) {
-            throw new ClientErrorException(409);
-        }
+        super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Client entity) throws ClientErrorException{
-        try{
-            LOGGER.log(Level.INFO, "Entering editing:{0}", entity.toString());
-            super.edit(entity);
-        }catch(Exception e){
-             LOGGER.log(Level.SEVERE, "Exception editing:{0}", e.getLocalizedMessage());
-        }
+    public void edit(@PathParam("id") Integer id, Client entity) {
+        super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        try {
-            super.remove(super.find(id));
-        } catch (Exception ex) {
-            throw new NotFoundException();
-
-        }
-
+        super.remove(super.find(id));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public Client find(@PathParam("id") Integer id) {
-        try {
-            return super.find(id);
-        } catch (Exception ex) {
-            throw new NotFoundException();
-        }
-
+        return super.find(id);
     }
 
     @GET
@@ -118,22 +94,25 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     protected EntityManager getEntityManager() {
         return em;
     }
-
     //This method is used to search for a client through their full name,
     //and if not found an error is sent to the user.
     @GET
     @Path("fullName/{fullName}")
     @Produces({MediaType.APPLICATION_XML})
-    public User findClientByFullName(@PathParam("fullName") String fullName) throws Exception {
+    public User findUserByLogin(@PathParam("fullName") String fullName) throws Exception {
         User user = null;
         try {
             user = (User) em.createNamedQuery("findClientByFullName")
                     .setParameter("fullname", fullName)
                     .getSingleResult();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
             throw new NotFoundException(e);
+        } catch (Exception e) {
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
         }
         return user;
     }
-}
 
+    
+    
+}
