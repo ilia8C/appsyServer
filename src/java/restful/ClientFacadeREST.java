@@ -60,9 +60,13 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Client entity) {
+    public void edit(@PathParam("id") Integer id, Client entity) throws ClientErrorException{
+        try{
             LOGGER.log(Level.INFO, "Entering editing:{0}", entity.toString());
             super.edit(entity);
+        }catch(Exception e){
+             LOGGER.log(Level.SEVERE, "Exception editing:{0}", e.getLocalizedMessage());
+        }
     }
 
     @DELETE
@@ -131,5 +135,5 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
         }
         return user;
     }
-
 }
+

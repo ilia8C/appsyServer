@@ -235,7 +235,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByEmail(@PathParam("email") String email) throws Exception {
         User user = null;
-        String password = generatePassword(8);
+        String password = "abcd*1234";
         try {
             String passwordHasheada = EncriptDecript.hashearTexto(password.getBytes());
             user = (User) em.createNamedQuery("resetPasswordByEmail")
