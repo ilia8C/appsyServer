@@ -138,7 +138,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @GET
     @Path("login/{login}/{password}")
     @Produces({MediaType.APPLICATION_XML})
-    public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception, NotAuthorizedException {
+    public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception, NotAuthorizedException, ServerErrorException {
         User user = null;
         try {
             String PassDecript = EncriptDecript.decrypt(password);
