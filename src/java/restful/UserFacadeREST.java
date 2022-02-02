@@ -138,7 +138,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @GET
     @Path("login/{login}/{password}")
     @Produces({MediaType.APPLICATION_XML})
-    public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception, NotAuthorizedException {
+    public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception, NotAuthorizedException, ServerErrorException {
         User user = null;
         try {
             String PassDecript = EncriptDecript.decrypt(password);
@@ -147,6 +147,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
                     .setParameter("password", PassDecript)
                     .getSingleResult();
             User userAux = new User();
+            userAux.setId(user.getId());
             userAux.setLogin(user.getLogin());
             userAux.setPassword(user.getPassword());
             userAux.setEmail(user.getEmail());
@@ -234,7 +235,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByEmail(@PathParam("email") String email) throws Exception {
         User user = null;
-        String password = "abcd*1234";
+        String password = generatePassword(8);
         try {
             String passwordHasheada = EncriptDecript.hashearTexto(password.getBytes());
             user = (User) em.createNamedQuery("resetPasswordByEmail")
