@@ -6,7 +6,6 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -99,7 +98,7 @@ public class Psychologist extends User implements Serializable {
     /**
      * @return the appointments
      */
-
+    @XmlTransient
     public Set<Appointment> getAppointments() {
         return appointments;
     }

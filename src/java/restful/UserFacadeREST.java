@@ -11,6 +11,7 @@ import entities.User;
 import java.util.ArrayList;
 import java.util.Date;
 import crypt.EncriptDecript;
+import entities.Client;
 import entities.User;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -20,6 +21,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -30,6 +32,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -53,31 +56,52 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML})
-    public void create(User entity) {
-        super.create(entity);
+    public void create(User entity) throws ClientErrorException{
+        try {
+            String passwordHash = EncriptDecript.hashearTexto(entity.getPassword().getBytes());
+            entity.setPassword(passwordHash);
+            super.create(entity);
+        } catch (Exception ex) {
+            throw new ClientErrorException(409);
+        }
+
     }
 
     //This method is used to edit existing users by the id.
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, User entity) {
-        super.edit(entity);
+    public void edit(@PathParam("id") Integer id, User entity) throws NotFoundException{
+        try {
+            super.edit(entity);
+        } catch (Exception ex) {
+            throw new NotFoundException();
+        }
     }
 
     //This method is used to delete users by the id.
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+    public void remove(@PathParam("id") Integer id) throws NotFoundException{
+        try {
+            super.remove(super.find(id));
+        } catch (Exception ex) {
+            throw new NotFoundException();
+        }
+
     }
 
     //This method is used to search for a users by the id.
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public User find(@PathParam("id") Integer id) {
-        return super.find(id);
+    public User find(@PathParam("id") Integer id) throws NotFoundException{
+        try {
+            return super.find(id);
+        } catch (Exception ex) {
+            throw new NotFoundException();
+        }
+
     }
 
     //This method is used to get all the users.
@@ -85,7 +109,6 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Override
     @Produces({MediaType.APPLICATION_XML})
     public List<User> findAll() {
-
         return super.findAll();
     }
 
@@ -115,34 +138,39 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @GET
     @Path("login/{login}/{password}")
     @Produces({MediaType.APPLICATION_XML})
-    public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception {
+    public User findUserByLoginAndPassword(@PathParam("login") String login, @PathParam("password") String password) throws Exception, NotAuthorizedException {
         User user = null;
         try {
-            String passwordEncrypt = EncriptDecript.encrypt(password);
-            System.out.println(passwordEncrypt);
-            String passwordHasheada = EncriptDecript.decrypt(passwordEncrypt);
-            System.out.println(passwordEncrypt);
+            String PassDecript = EncriptDecript.decrypt(password);
             user = (User) em.createNamedQuery("findUserByLoginAndPassword")
                     .setParameter("login", login)
-                    .setParameter("password", passwordHasheada)
+                    .setParameter("password", PassDecript)
                     .getSingleResult();
+            User userAux = new User();
+            userAux.setId(user.getId());
+            userAux.setLogin(user.getLogin());
+            userAux.setPassword(user.getPassword());
+            userAux.setEmail(user.getEmail());
+            userAux.setFullName(user.getFullName());
+            userAux.setEnumPrivilege(user.getEnumPrivilege());
             List<LastSignIn> lastSignIns = new ArrayList<>();
-            lastSignIns = (ArrayList) em.createNamedQuery("lastSignInsByLogin").setParameter("login", login).getResultList();
+            user = userAux;
+            /*lastSignIns = (ArrayList) em.createNamedQuery("lastSignInsByLogin").setParameter("login", login).getResultList();
             if (lastSignIns.size() < 10) {
-                LastSignIn lastSignIn = new LastSignIn();
-                lastSignIn.setId(null);
-                lastSignIn.setLastSignIn(new Date());
-                lastSignIn.setUser(user);
-                em.persist(lastSignIn);
+            LastSignIn lastSignIn = new LastSignIn();
+            lastSignIn.setId(null);
+            lastSignIn.setLastSignIn(new Date());
+            lastSignIn.setUser(userAux);
+            em.persist(lastSignIn);
             } else {
-                LastSignIn lis = lastSignIns.get(0);
-                lis.setLastSignIn(new Date());
-                em.merge(lis);
-            }
+            LastSignIn lis = lastSignIns.get(0);
+            lis.setLastSignIn(new Date());
+            em.merge(lis);
+            }*/
         } catch (NoResultException e) {
             throw new NotAuthorizedException(e);
-        } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        } catch (ClientErrorException e) {
+            throw new ServerErrorException(500);
         }
         return user;
     }
@@ -158,12 +186,44 @@ public class UserFacadeREST extends AbstractFacade<User> {
             user = (User) em.createNamedQuery("findUserByLogin")
                     .setParameter("login", login)
                     .getSingleResult();
+            User userAux = new User();
+            userAux.setLogin(user.getLogin());
+            userAux.setPassword(user.getPassword());
+            userAux.setEmail(user.getEmail());
+            userAux.setFullName(user.getFullName());
+            userAux.setEnumPrivilege(user.getEnumPrivilege());
+            List<LastSignIn> lastSignIns = new ArrayList<>();
+            user = userAux;
         } catch (NoResultException e) {
             throw new NotFoundException(e);
-        } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        } catch (ClientErrorException e) {
+            throw new ServerErrorException(500);
         }
         return user;
+    }
+
+    //This method is used to change the password of a user through his login 
+    //and receiving the new password, if the user is not found an error message is sent.
+    @GET
+    @Path("changePassword/{login}/{password}")
+    @Produces({MediaType.APPLICATION_XML})
+    public void changePasswordByLogin(@PathParam("login") String login, @PathParam("password") String password) throws  NotFoundException, ServerErrorException{
+        User user;
+        try {
+            String passwordDecript = EncriptDecript.decrypt(password);
+            user = (User) em.createNamedQuery("changePasswordByLogin")
+                    .setParameter("login", login)
+                    .getSingleResult();
+            user.setPassword(passwordDecript);
+            super.edit(user);
+            SendEmail.sendEmail(user.getEmail(), password, login, 2);
+        } catch (NoResultException e) {
+            throw new NotFoundException(e);
+        } catch (ClientErrorException e) {
+            throw new ServerErrorException(500);
+        } catch (Exception ex) {
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     //This method is used to reset the password of a user by receiving his email,
@@ -175,23 +235,26 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByEmail(@PathParam("email") String email) throws Exception {
         User user = null;
-        String password = generatePassword(8);
+        String password = "abcd*1234";
         try {
-            String passwordHasheada = EncriptDecript.hashearTexto(password);
+            String passwordHasheada = EncriptDecript.hashearTexto(password.getBytes());
             user = (User) em.createNamedQuery("resetPasswordByEmail")
                     .setParameter("email", email)
                     .getSingleResult();
             user.setPassword(passwordHasheada);
             em.merge(user);
-            SendEmail.sendEmail(email, password, user.getLogin());
+            SendEmail.sendEmail(email, password, user.getLogin(), 1);
         } catch (NoResultException e) {
             throw new NotFoundException(e);
-        } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        } catch (ClientErrorException e) {
+            throw new ServerErrorException(500);
         }
     }
+
     /**
-     * This method is used to generate random passwords by receiving the length of the password to be generated.
+     * This method is used to generate random passwords by receiving the length
+     * of the password to be generated.
+     *
      * @param length The length of the password to be generated
      * @return the generated password
      */

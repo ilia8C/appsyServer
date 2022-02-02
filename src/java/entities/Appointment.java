@@ -13,7 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -28,15 +27,26 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "findAppointmentsByPsychologist", 
-           query="SELECT a FROM Appointment a, Psychologist p WHERE p.id=:psychologistId and a.psychologist.id=p.id"
-                
+            name = "findAppointmentsOfPsychologist",
+            query = "SELECT a FROM Appointment a WHERE a.appointmentId.psychologistId=:psychologistId"
     ),
     @NamedQuery(
-        name = "findAppointmentsByClient", 
-       query="SELECT a FROM Appointment a, Client c WHERE c.id=:clientId and a.client.id=c.id"
-             
+            name = "findAppointmentsOfClient",
+            query = "SELECT a FROM Appointment a WHERE a.appointmentId.clientId=:clientId"
+    ),
+    @NamedQuery(
+            name = "findAppointmentsOfClientByPsychologist",
+            query = "SELECT a FROM Appointment a WHERE a.appointmentId.clientId=:clientId AND a.appointmentId.psychologistId=:psychologistId"                  
+    ),
+    @NamedQuery(
+            name = "findAppointmentsByDate",
+            query = "SELECT a FROM Appointment a WHERE a.date=:date"
+    ),
+    @NamedQuery(
+            name = "deleteAppointment",
+            query = "DELETE FROM Appointment a WHERE a.appointmentId.clientId=:clientId and a.appointmentId.psychologistId=:psychologistId "
     )
+
 })
 @Entity
 @Table(name = "appointment", schema = "appsydb")
@@ -49,11 +59,11 @@ public class Appointment implements Serializable {
     private AppointmentId appointmentId;
     //@MapsId("psychologistId")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="psychologistId",updatable=false,insertable=false)
+    @JoinColumn(name = "psychologistId", updatable = false, insertable = false)
     private Psychologist psychologist;
     //@MapsId("clientId")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="clientId",updatable=false,insertable=false)
+    @JoinColumn(name = "clientId", updatable = false, insertable = false)
     private Client client;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
@@ -61,7 +71,7 @@ public class Appointment implements Serializable {
     private Integer numAppointment;
     private Float price;
 
-   @Override
+    @Override
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.appointmentId);
@@ -137,7 +147,6 @@ public class Appointment implements Serializable {
     /**
      * @return the psychologist
      */
-    @XmlTransient
     public Psychologist getPsychologist() {
         return psychologist;
     }
