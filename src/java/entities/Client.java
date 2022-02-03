@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
@@ -35,8 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     //This is the query to reset a password from a user by the email.
     @NamedQuery(
             name = "resetPasswordByEmail", query = "SELECT u FROM User u  WHERE u.email=:email"
-    ),
-    
+    )
 })
 @Entity
 @Table(name = "client", schema = "appsydb")
@@ -48,10 +46,10 @@ public class Client extends User implements Serializable {
     private Date dateStart;
     
 
-    @OneToMany(mappedBy = "client",fetch=FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<Appointment> appointments;
     
-     @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<ClientResource> clientResources;
 
 

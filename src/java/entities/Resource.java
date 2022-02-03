@@ -64,7 +64,7 @@ public class Resource implements Serializable {
      *
      * @return a list of ClientResources.
      */
-@XmlTransient
+    @XmlTransient
     public Set<ClientResource> getClientResource() {
         return clientResource;
     }
@@ -83,7 +83,7 @@ public class Resource implements Serializable {
      *
      * @return the object Psychologist.
      */
-  
+    
     public Psychologist getPsychologist() {
         return psychologist;
     }
