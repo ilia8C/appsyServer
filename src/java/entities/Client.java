@@ -35,8 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     //This is the query to reset a password from a user by the email.
     @NamedQuery(
             name = "resetPasswordByEmail", query = "SELECT u FROM User u  WHERE u.email=:email"
-    ),
-    
+    )
 })
 @Entity
 @Table(name = "client", schema = "appsydb")
@@ -51,7 +50,7 @@ public class Client extends User implements Serializable {
     @OneToMany(mappedBy = "client",fetch=FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Appointment> appointments;
     
-     @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
     private Set<ClientResource> clientResources;
 
 

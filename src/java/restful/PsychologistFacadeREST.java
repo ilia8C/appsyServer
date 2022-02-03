@@ -32,7 +32,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Ilia Consuegra
  */
 @Stateless
 @Path("entities.psychologist")

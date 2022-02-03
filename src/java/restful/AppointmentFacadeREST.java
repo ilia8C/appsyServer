@@ -32,7 +32,7 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author 2dam
+ * @author Ilia Consuegra
  */
 @Stateless
 @Path("entities.appointment")

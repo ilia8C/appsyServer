@@ -136,4 +136,3 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
         return user;
     }
 }
-
