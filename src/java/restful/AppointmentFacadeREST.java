@@ -21,6 +21,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -31,7 +32,7 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author 2dam
+ * @author Ilia Consuegra
  */
 @Stateless
 @Path("entities.appointment")
@@ -88,19 +89,29 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
 
     @DELETE
     @Path("delete/{psychologistId}/{clientId}")
-    public void remove(@PathParam("psychologistId") Integer psychologistId, @PathParam("clientId") Integer clientId) {
-        em.createNamedQuery("deleteAppointment")
-                .setParameter("psychologistId", psychologistId)
-                .setParameter("clientId", clientId)
-                .executeUpdate();
+    public void remove(@PathParam("psychologistId") Integer psychologistId, @PathParam("clientId") Integer clientId) throws NotFoundException {
+        try {
+            em.createNamedQuery("deleteAppointment")
+                    .setParameter("psychologistId", psychologistId)
+                    .setParameter("clientId", clientId)
+                    .executeUpdate();
+        } catch (Exception ex) {
+            throw new NotFoundException();
+        }
+
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Appointment find(@PathParam("id") PathSegment id) {
-        entities.AppointmentId key = getPrimaryKey(id);
-        return super.find(key);
+    public Appointment find(@PathParam("id") PathSegment id) throws NotFoundException {
+        try {
+            entities.AppointmentId key = getPrimaryKey(id);
+            return super.find(key);
+        } catch (Exception ex) {
+            throw new NotFoundException();
+        }
+
     }
 
     @GET
@@ -127,15 +138,15 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
     @GET
     @Path("psychologistId/{psychologistId}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<Appointment> findAppointmentsOfPsychologist(@PathParam("psychologistId") Integer psychologistId) {
+    public Set<Appointment> findAppointmentsOfPsychologist(@PathParam("psychologistId") Integer psychologistId) throws NotFoundException {
         Set<Appointment> appointments = null;
         try {
             appointments = new HashSet<>(em.createNamedQuery("findAppointmentsOfPsychologist")
                     .setParameter("psychologistId", psychologistId)
                     .getResultList());
 
-        } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+        } catch (Exception ex) {
+            throw new NotFoundException();
         }
         return appointments;
 
@@ -144,7 +155,7 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
     @GET
     @Path("psychologistId/{psychologistId}/clientId/{clientId}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<Appointment> findAppointmentsOfClientByPsychologist(@PathParam("psychologistId") Integer psychologistId, @PathParam("clientId") Integer clientId) {
+    public Set<Appointment> findAppointmentsOfClientByPsychologist(@PathParam("psychologistId") Integer psychologistId, @PathParam("clientId") Integer clientId) throws NotFoundException {
         Set<Appointment> appointments = null;
         try {
             appointments = new HashSet<>(em.createNamedQuery("findAppointmentsOfClientByPsychologist")
@@ -153,7 +164,7 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
                     .getResultList());
 
         } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+            throw new NotFoundException();
         }
         return appointments;
     }
@@ -161,7 +172,7 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
     @GET
     @Path("clientId/{clientId}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<Appointment> findAppointmentsOfClient(@PathParam("clientId") Integer clientId) {
+    public Set<Appointment> findAppointmentsOfClient(@PathParam("clientId") Integer clientId) throws NotFoundException {
         Set<Appointment> appointments = null;
         try {
             appointments = new HashSet<>(em.createNamedQuery("findAppointmentsOfClient")
@@ -169,7 +180,7 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
                     .getResultList());
 
         } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+            throw new NotFoundException();
         }
         return appointments;
 
@@ -178,7 +189,7 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
     @GET
     @Path("date/{date}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<Appointment> findAppointmentsByDate(@PathParam("date") String date) {
+    public Set<Appointment> findAppointmentsByDate(@PathParam("date") String date) throws NotFoundException {
         Set<Appointment> appointments = null;
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -189,7 +200,7 @@ public class AppointmentFacadeREST extends AbstractFacade<Appointment> {
                     .getResultList());
 
         } catch (Exception e) {
-            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, e.getMessage());
+            throw new NotFoundException();
         }
         return appointments;
 

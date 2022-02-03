@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
@@ -46,7 +47,7 @@ public class Client extends User implements Serializable {
     private Date dateStart;
     
 
-    @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "client",fetch=FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Appointment> appointments;
     
     @OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
